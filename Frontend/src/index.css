@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme {
+@theme{
   --color-primary: #305cde;
   --color-accent: #305cde;
   --color-text: #0C0C0C;
@@ -19,4 +19,4 @@ body { @apply bg-white text-[color:var(--color-text)] font-sans; }
 .card { @apply rounded-2xl border border-neutral-200 bg-white shadow-sm; }
 .shadow-soft { box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
 
-:::-webkit-scrollbar{display: none;}
+::-webkit-scrollbar{display: none;}
