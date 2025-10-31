@@ -7,7 +7,7 @@ const Navbar = () => {
     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-neutral-200">
       <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 font-semibold">
-          <span className="h-6 w-6 rounded-md bg-[color:var(--color-primary)]" />
+          <span className="h-6 w-6 rounded-md bg-blue-400" />
           <span>StitchUp</span>
         </Link>
         <nav className="hidden sm:flex items-center gap-3">
