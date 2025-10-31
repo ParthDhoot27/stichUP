@@ -4,7 +4,7 @@ import PrimaryButton from '../components/ui/PrimaryButton'
 import TailorCard from '../components/TailorCard'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import MapPlaceholder from '../components/MapPlaceholder'
+import HeroSection from '../components/HeroSection'
 import ServiceCard from '../components/ServiceCard'
 import TestimonialsSlider from '../components/TestimonialsSlider'
 import { FiZap, FiScissors, FiTruck } from 'react-icons/fi'
@@ -14,32 +14,8 @@ const Homepage = () => {
   const navigate = useNavigate()
   return (
     <div className="min-h-dvh flex flex-col">
-      <Navbar />
-      <header className="w-full bg-blue-500 text-white">
-        <div className="mx-auto w-full max-w-6xl px-4 py-10">
-          <div className="grid gap-6 md:grid-cols-[1.2fr_1fr] items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 text-sm px-3 py-1 rounded-full border border-white/40">Doorstep tailoring</div>
-              <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mt-3">Tailoring at your doorstep</h1>
-              <p className="text-white/90 mt-2">Find skilled tailors nearby for stitching and alterations.</p>
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-2">
-                <div className="flex items-center gap-2 bg-white text-text rounded-xl px-3 py-2">
-                  <span className="h-2 w-2 rounded-full bg-accent" />
-                  <input placeholder="Enter your location" className="flex-1 outline-none bg-transparent" />
-                </div>
-                <PrimaryButton onClick={() => navigate('/find')}>Find Tailor</PrimaryButton>
-                <PrimaryButton variant="outline" onClick={() => navigate('/tailor/dashboard')} className="text-white border-white/60 hover:border-white">Become a Tailor</PrimaryButton>
-              </div>
-              <div className="grid sm:grid-cols-3 gap-3 mt-6">
-                <ServiceCard icon={<FiZap />} title="Doorstep pickup" subtitle="Quick collection from your address" />
-                <ServiceCard icon={<FiScissors />} title="Skilled tailors" subtitle="Verified & rated professionals" />
-                <ServiceCard icon={<FiTruck />} title="Fast delivery" subtitle="Right to your door" />
-              </div>
-            </div>
-            <MapPlaceholder className="h-72" />
-          </div>
-        </div>
-      </header>
+      <Navbar hideUntilScroll />
+      <HeroSection />
 
       <section className="px-4 mx-auto w-full max-w-6xl">
         <h2 className="text-2xl font-semibold mb-3">Popular nearby tailors</h2>
