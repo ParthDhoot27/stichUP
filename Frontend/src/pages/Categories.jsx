@@ -1,12 +1,14 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const Categories = () => {
   const navigate = useNavigate()
+  const { type } = useParams()
 
-  const categories = [
+  // Quick fix categories - for simple repairs and alterations
+  const quickFixCategories = [
     { id: 'shirt', name: 'Shirt', image: '/shirt.jpg' },
     { id: 'pant', name: 'Pant', image: '/pant.jpg' },
     { id: 'jacket', name: 'Jacket', image: '/jacket.jpg' },
@@ -16,11 +18,37 @@ const Categories = () => {
     { id: 'other', name: 'Other', image: '/other.jpg' },
   ]
 
+  // Heavy tailoring categories - for new garments and complex work
+  const heavyTailoringCategories = [
+    { id: 'suit', name: 'Suit', image: '/suit.jpg' },
+    { id: 'blazer', name: 'Blazer', image: '/blazer.jpg' },
+    { id: 'coat', name: 'Coat', image: '/coat.jpg' },
+    { id: 'dress', name: 'Dress', image: '/dress.jpg' },
+    { id: 'sherwani', name: 'Sherwani', image: '/sherwani.jpg' },
+    { id: 'lehenga', name: 'Lehenga', image: '/lehenga.jpg' },
+    { id: 'saree', name: 'Saree', image: '/saree.jpg' },
+    { id: 'traditional', name: 'Traditional', image: '/traditional.jpg' },
+    { id: 'other', name: 'Other', image: '/other.jpg' },
+  ]
+
+  // Use appropriate categories based on type
+  const categories = type === 'heavy-tailoring' ? heavyTailoringCategories : quickFixCategories
+
   const handleCategorySelect = (categoryId) => {
     try {
       localStorage.setItem('selectedCategory', categoryId)
     } catch {}
-    navigate(`/quick-fix-options?category=${categoryId}`)
+    
+    // Navigate based on type: quick-fix goes to quick-fix-options, heavy-tailoring goes to find
+    if (type === 'heavy-tailoring') {
+      try {
+        localStorage.setItem('workType', 'heavy')
+      } catch {}
+      navigate(`/find?type=heavy&category=${categoryId}`)
+    } else {
+      // Default to quick-fix behavior
+      navigate(`/quick-fix-options?category=${categoryId}`)
+    }
   }
 
   return (

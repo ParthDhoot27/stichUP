@@ -51,6 +51,8 @@ const Signup = () => {
       users.push(user)
       localStorage.setItem('users', JSON.stringify(users))
       localStorage.setItem('currentUser', JSON.stringify(user))
+      // Dispatch event to update navbar
+      window.dispatchEvent(new Event('authChange'))
       setToast(true)
       setTimeout(() => setToast(false), 1200)
       // navigate to respective dashboard
