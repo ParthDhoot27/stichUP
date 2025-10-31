@@ -5,51 +5,43 @@ import TailorListCard from '../components/TailorListCard'
 import { FiSearch } from 'react-icons/fi'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-
-const sampleTailors = [
-  { id: 6, name: 'Button & Hem', rating: 4.2, reviews: 30, distanceKm: 3.1, priceFrom: 99, shopPhotoUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80', avgQuickMins: 30, avgHeavyMins: 140, isAvailable: false, currentOrders: 7 },
-  { id: 7, name: 'Classic Tailors Co.', rating: 4.9, reviews: 340, distanceKm: 0.4, priceFrom: 299, shopPhotoUrl: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80', avgQuickMins: 12, avgHeavyMins: 70, isAvailable: true, currentOrders: 0 },
-  { id: 8, name: 'Metro Mend', rating: 4.3, reviews: 54, distanceKm: 2.0, priceFrom: 129, shopPhotoUrl: 'https://images.unsplash.com/photo-1520975909799-9b8b9a2b5b5f?auto=format&fit=crop&w=800&q=80', avgQuickMins: 24, avgHeavyMins: 95, isAvailable: true, currentOrders: 6 },
-  { id: 9, name: 'SewRight Studio', rating: 4.6, reviews: 77, distanceKm: 1.5, priceFrom: 179, shopPhotoUrl: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=800&q=80', avgQuickMins: 19, avgHeavyMins: 88, isAvailable: true, currentOrders: 2 },
-  { id: 10, name: 'Pocketfix Tailors', rating: 4.1, reviews: 28, distanceKm: 4.0, priceFrom: 89, shopPhotoUrl: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=80', avgQuickMins: 35, avgHeavyMins: 150, isAvailable: false, currentOrders: 9 },
-]
-
-const Chip = ({ label, selected, onClick }) => (
-  <motion.button
-    whileTap={{ scale: 0.98 }}
-    whileHover={{ y: -1 }}
-    onClick={onClick}
-    className={[
-      'px-3 py-1.5 rounded-full border text-sm',
-      selected
-        ? 'border-(--color-primary) text-(--color-primary) bg-(--color-primary)/10'
-        : 'border-neutral-200 hover:border-(--color-primary)'
-    ].join(' ')}
-  >
-    {label}
-  </motion.button>
-)
+import axios from 'axios'
 
 const FindTailor = () => {
   const [query, setQuery] = useState('')
   const [workType, setWorkType] = useState('quick') // quick | heavy
   const [hovered, setHovered] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [tailors, setTailors] = useState([])
   const navigate = useNavigate()
   const [params] = useSearchParams()
 
-  const list = useMemo(() => {
-    // Mock data filtering logic
-    return sampleTailors.filter(t =>
-      query ? t.name.toLowerCase().includes(query.toLowerCase()) : true
-    )
-  }, [query])
-
-  // Mock initial loading state
   useEffect(() => {
-    const to = setTimeout(() => setLoading(false), 600)
-    return () => clearTimeout(to)
-  }, [])
+    const fetchTailors = async () => {
+      try {
+        setLoading(true)
+        const response = await axios.get('/api/tailors', {
+          params: { query, workType },
+        })
+        console.log('API Response:', response.data) // Debugging line
+
+        // Ensure the response is valid and contains an array
+        if (response.data && Array.isArray(response.data)) {
+          setTailors(response.data)
+        } else {
+          console.error('Unexpected API response format:', response.data)
+          setTailors([]) // Fallback to an empty array
+        }
+      } catch (error) {
+        console.error('Error fetching tailors:', error)
+        setTailors([]) // Fallback to an empty array on error
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTailors()
+  }, [query, workType])
 
   return (
     <div className="min-h-dvh flex flex-col">
@@ -90,8 +82,8 @@ const FindTailor = () => {
                 </div>
               </div>
             ))
-          ) : list.length ? (
-            list.map((t) => (
+          ) : tailors.length ? (
+            tailors.map((t) => (
               <TailorListCard
                 key={t.id}
                 tailor={t}
@@ -112,6 +104,22 @@ const FindTailor = () => {
     </div>
   )
 }
+
+const Chip = ({ label, selected, onClick }) => (
+  <motion.button
+    whileTap={{ scale: 0.98 }}
+    whileHover={{ y: -1 }}
+    onClick={onClick}
+    className={[
+      'px-3 py-1.5 rounded-full border text-sm',
+      selected
+        ? 'border-(--color-primary) text-(--color-primary) bg-(--color-primary)/10'
+        : 'border-neutral-200 hover:border-(--color-primary)'
+    ].join(' ')}
+  >
+    {label}
+  </motion.button>
+)
 
 export default FindTailor
 
