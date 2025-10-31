@@ -5,12 +5,13 @@ import Input from '../components/ui/Input'
 import PrimaryButton from '../components/ui/PrimaryButton'
 import OTPModal from '../components/OTPModal'
 import Toast from '../components/Toast'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
  
 
 
 const Login = () => {
-  const [form, setForm] = useState({ phone: '', password: '' })
+  const navigate = useNavigate()
+  const [form, setForm] = useState({ phone: '7340015201', password: '123456' })
   const [errors, setErrors] = useState({})
   const [otpOpen, setOtpOpen] = useState(false)
   const [toast, setToast] = useState(false)
@@ -24,8 +25,7 @@ const Login = () => {
     if (!form.password || form.password.length < 6) next.password = 'Min 6 characters'
     setErrors(next)
     if (Object.keys(next).length === 0) {
-      setToast(true)
-      setTimeout(() => setToast(false), 2000)
+      navigate('/customer')
     }
   }
 
@@ -37,8 +37,8 @@ const Login = () => {
           <div className="text-2xl font-semibold">Login</div>
           <div className="grid gap-4 mt-4">
             {/* <Input label="Email" name="email" value={form.email} onChange={onChange} placeholder="you@example.com" error={errors.email} /> */}
-            <Input label="Phone" name="phone" value={form.phone} onChange={onChange} placeholder="98765 43210" error={errors.phone} />
-            <Input label="Password" type="password" name="password" value={form.password} onChange={onChange} placeholder="••••••" error={errors.password} />
+            <Input label="Phone" name="phone" value={form.phone} onChange={onChange} placeholder="98765 43210" error={errors.phone} helperText="Demo: 7340015201" />
+            <Input label="Password" type="password" name="password" value={form.password} onChange={onChange} placeholder="••••••" error={errors.password} helperText="Demo: 123456" />
             <div className="flex items-center gap-2">
               <PrimaryButton type="submit" className="flex-1">Login</PrimaryButton>
               <button type="button" className="btn-outline" onClick={() => setOtpOpen(true)}>Get OTP</button>

@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import Card from '../components/ui/Card'
 import MapPlaceholder from '../components/MapPlaceholder'
 import PrimaryButton from '../components/ui/PrimaryButton'
 import { FiPhone, FiMessageCircle } from 'react-icons/fi'
+import { useLocation } from 'react-router-dom'
 
 const Step = ({ label, active, done, time }) => {
   return (
@@ -22,16 +23,53 @@ const Step = ({ label, active, done, time }) => {
 }
 
 const OrderTracking = () => {
+  const location = useLocation()
   // Mock data
   const [statusIndex, setStatusIndex] = useState(2) // 0..5
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [rider, setRider] = useState(null) // { name, etaMin }
+  const [etaSec, setEtaSec] = useState(0)
+  const [proofAvailable, setProofAvailable] = useState(false)
   const steps = useMemo(() => ([
     { label: 'Requested', time: '10:30 AM' },
     { label: 'Accepted', time: '10:35 AM' },
     { label: 'In Progress', time: '10:45 AM' },
-    { label: 'Ready', time: '' },
+    { label: 'Ready (Awaiting Confirmation)', time: '' },
     { label: 'Out for Delivery', time: '' },
     { label: 'Delivered', time: '' },
   ]), [])
+
+  // Initialize from navigation state
+  useEffect(() => {
+    const s = location.state?.status
+    if (s === 'awaiting_confirmation') {
+      setStatusIndex(3)
+      setConfirmOpen(true)
+      setProofAvailable(!!location.state?.proof)
+    }
+  }, [location.state])
+
+  // After assigning rider, auto-complete delivery
+  useEffect(() => {
+    if (!rider) return
+    setEtaSec((rider.etaMin || 0) * 60)
+    const tick = setInterval(() => {
+      setEtaSec(s => {
+        if (s <= 1) {
+          clearInterval(tick)
+          setStatusIndex(5)
+          return 0
+        }
+        return s - 1
+      })
+    }, 1000)
+    return () => clearInterval(tick)
+  }, [rider])
+
+  const assignRider = () => {
+    setRider({ name: 'Rahul', vehicle: 'MH12-AB-1234', phone: '+91 98765 43210', etaMin: 12 })
+    setStatusIndex(4)
+  }
 
   const canCancel = statusIndex <= 1
 
@@ -97,9 +135,43 @@ const OrderTracking = () => {
             {canCancel ? <button className="btn-outline w-full mt-4">Cancel request</button> : null}
             <PrimaryButton className="w-full mt-2">Track in real-time</PrimaryButton>
           </Card>
+
+          {rider ? (
+            <Card className="p-5">
+              <div className="text-lg font-semibold mb-1">Rider Assigned</div>
+              <div className="text-neutral-600 text-sm">{rider.name} • {rider.vehicle}</div>
+              <div className="text-neutral-600 text-sm mt-1">Phone: {rider.phone}</div>
+              <div className="mt-3 inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-[color:var(--color-primary)]/10 text-[color:var(--color-primary)] text-sm">
+                ETA {Math.floor(etaSec/60)}:{String(etaSec%60).padStart(2,'0')} min
+              </div>
+              <a href={`tel:${rider.phone.replace(/\s/g, '')}`} className="btn-primary mt-3 inline-flex items-center gap-2">Call rider</a>
+            </Card>
+          ) : null}
         </div>
       </main>
       <Footer />
+      {confirmOpen ? (
+        <div className="fixed inset-0 z-50">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setConfirmOpen(false)} />
+          <div className="absolute inset-0 grid place-items-center px-4">
+            <div className="card p-5 w-full max-w-sm bg-white">
+              <div className="text-lg font-semibold">Confirm completion</div>
+              <div className="text-neutral-600 text-sm mt-1">Tailor marked your work as done. Please review and confirm.</div>
+              <div className="mt-3 h-40 rounded-xl border border-neutral-200 bg-neutral-50 grid place-items-center text-neutral-500 overflow-hidden">
+                {proofAvailable ? (
+                  <div className="text-sm">Completion photo available (mock)</div>
+                ) : (
+                  <div className="text-sm">No image provided</div>
+                )}
+              </div>
+              <div className="mt-4 flex items-center justify-end gap-2">
+                <button className="btn-outline" onClick={() => setConfirmOpen(false)}>Talk first</button>
+                <button className="btn-primary" onClick={() => { setConfirmOpen(false); assignRider(); }}>Confirm & Assign Rider</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }

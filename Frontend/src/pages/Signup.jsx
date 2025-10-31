@@ -49,6 +49,7 @@ const Signup = () => {
               onChange={(e) => { setForm({ ...form, phone: e.target.value }); if (otpVerified) setOtpVerified(false); }}
               placeholder="98765 43210"
               error={errors.phone}
+              helperText="Demo: 7340015201"
               right={
                 <button
                   type="button"
@@ -64,7 +65,7 @@ const Signup = () => {
                 </button>
               }
             />
-            <Input label="Password" type="password" name="password" value={form.password} onChange={onChange} placeholder="••••••" error={errors.password} />
+            <Input label="Password" type="password" name="password" value={form.password} onChange={onChange} placeholder="••••••" error={errors.password} helperText="Demo: 123" />
             <div className="flex items-center gap-2">
               <PrimaryButton
                 type="submit"

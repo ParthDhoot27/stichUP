@@ -35,7 +35,7 @@ const Footer = () => {
             {/* <h4 className="text-base font-semibold text-neutral-900">Download app</h4> */}
             <div className="mt-3 flex justify-end">
               <a href="/" aria-label="StitchUp Home">
-                <img src="/logo2.png" alt="StitchUp logo" className="h-19 w-auto" />
+                <img src="/logo2.png" alt="StitchUp logo" className="h-12 w-auto" />
               </a>
             </div>
           </div>

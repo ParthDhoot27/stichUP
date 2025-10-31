@@ -16,6 +16,7 @@ import AdminDashboard from './pages/admin/Dashboard'
 import AdminTailors from './pages/admin/Tailors'
 import AdminUsers from './pages/admin/Users'
 import AdminOrders from './pages/admin/Orders'
+import Customer from './pages/Customer'
 
 const App = () => {
   return (
@@ -37,6 +38,7 @@ const App = () => {
         <Route path='/admin/tailors' element={<AdminTailors/>} />
         <Route path='/admin/users' element={<AdminUsers/>} />
         <Route path='/admin/orders' element={<AdminOrders/>} />
+        <Route path='/customer' element={<Customer/>} />
       </Routes>
     </div>
   )
