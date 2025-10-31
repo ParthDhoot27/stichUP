@@ -1,18 +1,72 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 const Tag = ({ children }) => (
   <span className="px-2 py-0.5 rounded-full text-xs border border-neutral-200 bg-neutral-50">{children}</span>
 )
 
-const TailorListCard = ({ tailor, onHover, onLeave, onBook, onOpen }) => {
+const TailorListCard = ({ tailor, onHover, onLeave, isQuickFix = false }) => {
+  const navigate = useNavigate()
   const {
+    id,
     name,
     shopPhotoUrl,
     isAvailable = true,
     currentOrders = 0,
-    distanceKm = 0
+    distanceKm = 0,
+    rating = 0,
+    reviews = 0,
+    priceFrom = 0
   } = tailor
+
+  const [addedToCart, setAddedToCart] = useState(false)
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation()
+    
+    try {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]')
+      
+      // Check if item already exists in cart
+      const existingItem = cart.find(item => item.tailorId === id)
+      
+      if (existingItem) {
+        // Item already in cart, maybe show a message
+        setAddedToCart(true)
+        setTimeout(() => setAddedToCart(false), 2000)
+        return
+      }
+      
+      // Add new item to cart
+      const cartItem = {
+        tailorId: id,
+        tailorName: name,
+        tailorImage: shopPhotoUrl,
+        priceFrom: priceFrom,
+        distanceKm: distanceKm,
+        rating: rating,
+        addedAt: new Date().toISOString()
+      }
+      
+      cart.push(cartItem)
+      localStorage.setItem('cart', JSON.stringify(cart))
+      
+      // Dispatch event to notify other components (like navbar cart count)
+      window.dispatchEvent(new Event('cartUpdate'))
+      
+      setAddedToCart(true)
+      setTimeout(() => setAddedToCart(false), 2000)
+    } catch (error) {
+      console.error('Error adding to cart:', error)
+    }
+  }
+
+  const handleEnquireNow = (e) => {
+    e.stopPropagation()
+    // Navigate to enquiries page with tailor info
+    navigate(`/enquiries?tailorId=${id}&tailorName=${encodeURIComponent(name)}&isOnline=${isAvailable}`)
+  }
 
   return (
     <motion.div
@@ -22,42 +76,65 @@ const TailorListCard = ({ tailor, onHover, onLeave, onBook, onOpen }) => {
       whileHover={{ y: -2 }}
       onMouseEnter={() => onHover?.(tailor)}
       onMouseLeave={() => onLeave?.(tailor)}
-      onClick={() => onOpen?.(tailor)}
-      className="card p-5 cursor-pointer"
+      className="card overflow-hidden"
     >
-      <div className="flex gap-4">
-        <div className="w-28 h-28 rounded-xl bg-neutral-100 border border-neutral-200 overflow-hidden shrink-0">
-          {shopPhotoUrl ? (
-            <img src={shopPhotoUrl} alt={name} className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-sm text-neutral-400">No photo</div>
-          )}
+      {/* Big Image */}
+      <div className="w-full h-48 bg-neutral-100 overflow-hidden">
+        {shopPhotoUrl ? (
+          <img src={shopPhotoUrl} alt={name} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-sm text-neutral-400">No photo</div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="p-5">
+        {/* Name */}
+        <div className="font-semibold text-xl mb-2">{name}</div>
+
+        {/* Rating and Reviews */}
+        <div className="flex items-center gap-2 text-sm text-neutral-600 mb-2">
+          <span className="font-medium">⭐ {rating.toFixed(1)}</span>
+          <span>({reviews} reviews)</span>
         </div>
 
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <div className="font-semibold truncate text-lg">{name}</div>
-              <div className="text-sm text-neutral-600 mt-1">{distanceKm} km away</div>
-            </div>
-
-            <div className="text-right">
-              <div className={`px-2 py-1 rounded-full text-xs font-medium ${isAvailable ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-600'}`}>
-                {isAvailable ? 'Open' : 'Closed'}
-              </div>
-            </div>
+        {/* Other Info */}
+        <div className="space-y-2 text-sm mb-4">
+          <div className="flex items-center justify-between">
+            <span className="text-neutral-600">Distance</span>
+            <span className="font-medium">{distanceKm} km away</span>
           </div>
-
-          <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
-            <div>
-              <div className="text-xs text-neutral-500">Current Customers</div>
-              <div className="font-medium">{currentOrders}</div>
-            </div>
+          <div className="flex items-center justify-between">
+            <span className="text-neutral-600">Price From</span>
+            <span className="font-medium">₹{priceFrom}</span>
           </div>
-
-          <div className="mt-4">
-            <button onClick={() => onBook?.(tailor)} className="btn-primary">Book Service</button>
+          <div className="flex items-center justify-between">
+            <span className="text-neutral-600">Current Customers</span>
+            <span className="font-medium">{currentOrders}</span>
           </div>
+        </div>
+
+        {/* Availability and Action Button */}
+        <div className="flex items-center justify-between gap-3">
+          <div className={`px-3 py-1 rounded-full text-xs font-medium ${isAvailable ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-600'}`}>
+            {isAvailable ? 'Online' : 'Offline'}
+          </div>
+          {isQuickFix ? (
+            <button 
+              onClick={handleEnquireNow}
+              className="btn-primary flex-1"
+            >
+              Enquire Now
+            </button>
+          ) : (
+            <button 
+              onClick={handleAddToCart}
+              disabled={addedToCart}
+              className={`btn-primary flex-1 ${addedToCart ? 'opacity-75 cursor-not-allowed' : ''}`}
+            >
+              {addedToCart ? 'Added to Cart ✓' : 'Add to Cart'}
+            </button>
+          )}
         </div>
       </div>
     </motion.div>

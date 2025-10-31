@@ -46,6 +46,8 @@ const Login = () => {
         return
       }
       localStorage.setItem('currentUser', JSON.stringify(user))
+      // Dispatch event to update navbar
+      window.dispatchEvent(new Event('authChange'))
       if (user.role === 'tailor') navigate('/tailor/dashboard')
       else navigate('/customer')
     }

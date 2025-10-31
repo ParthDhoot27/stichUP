@@ -11,9 +11,9 @@ const Customer = () => {
     try { localStorage.setItem('workType', type) } catch {}
     setParams({ type })
     if (type === 'light') {
-      navigate('/categories')
+      navigate('/categories/quick-fix')
     } else {
-      navigate(`/find?type=${type}`)
+      navigate('/categories/heavy-tailoring')
     }
   }
 

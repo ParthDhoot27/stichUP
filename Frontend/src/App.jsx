@@ -19,6 +19,10 @@ import AdminOrders from './pages/admin/Orders'
 import Customer from './pages/Customer'
 import Categories from './pages/Categories'
 import QuickFixOptions from './pages/QuickFixOptions'
+import Cart from './pages/Cart'
+import CustomerOrders from './pages/customer/Orders'
+import CustomerAccount from './pages/customer/Account'
+import Enquiries from './pages/Enquiries'
 
 const App = () => {
   return (
@@ -41,7 +45,12 @@ const App = () => {
         <Route path='/admin/users' element={<AdminUsers/>} />
         <Route path='/admin/orders' element={<AdminOrders/>} />
         <Route path='/customer' element={<Customer/>} />
+        <Route path='/customer/account' element={<CustomerAccount/>} />
+        <Route path='/customer/orders' element={<CustomerOrders/>} />
+        <Route path='/enquiries' element={<Enquiries/>} />
+        <Route path='/cart' element={<Cart/>} />
         <Route path='/categories' element={<Categories/>} />
+        <Route path='/categories/:type' element={<Categories/>} />
         <Route path='/quick-fix-options' element={<QuickFixOptions/>} />
       </Routes>
     </div>

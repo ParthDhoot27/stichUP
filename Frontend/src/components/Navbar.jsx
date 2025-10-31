@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Navbar = ({ hideUntilScroll = false }) => {
   const [isVisible, setIsVisible] = useState(!hideUntilScroll)
+  const [user, setUser] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!hideUntilScroll) return
@@ -26,6 +28,43 @@ const Navbar = ({ hideUntilScroll = false }) => {
       return () => clearTimeout(t)
     }
   }, [hideUntilScroll, isVisible, hasAnimated])
+
+  // Check if user is logged in
+  useEffect(() => {
+    const checkUser = () => {
+      try {
+        const currentUser = localStorage.getItem('currentUser')
+        if (currentUser) {
+          setUser(JSON.parse(currentUser))
+        } else {
+          setUser(null)
+        }
+      } catch {
+        setUser(null)
+      }
+    }
+    
+    checkUser()
+    // Listen for storage changes (when user logs in/out in another tab)
+    window.addEventListener('storage', checkUser)
+    
+    // Also trigger check when navigating (by listening to custom event)
+    const handleAuthChange = () => checkUser()
+    window.addEventListener('authChange', handleAuthChange)
+    
+    return () => {
+      window.removeEventListener('storage', checkUser)
+      window.removeEventListener('authChange', handleAuthChange)
+    }
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser')
+    setUser(null)
+    // Dispatch event to notify other components
+    window.dispatchEvent(new Event('authChange'))
+    navigate('/')
+  }
 
   const playEntrance = hideUntilScroll && isVisible && !hasAnimated
 
@@ -63,8 +102,57 @@ const Navbar = ({ hideUntilScroll = false }) => {
           animate={{ x: 0, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 260, damping: 22 }}
         >
-          <Link to="/login" className="inline-flex items-center justify-center rounded-xl px-4 py-2 bg-black text-white font-semibold hover:bg-neutral-900 transition-colors">Login</Link>
-          <Link to="/signup" className="inline-flex items-center justify-center rounded-xl px-4 py-2 bg-black text-white font-semibold hover:bg-neutral-900 transition-colors">Sign up</Link>
+          {user ? (
+            user.role === 'customer' ? (
+              <>
+                <Link 
+                  to="/customer/account"
+                  className="inline-flex items-center justify-center px-4 py-2 text-white font-medium hover:text-white/80 transition-colors"
+                >
+                  My Account
+                </Link>
+                <Link 
+                  to="/customer/orders"
+                  className="inline-flex items-center justify-center px-4 py-2 text-white font-medium hover:text-white/80 transition-colors"
+                >
+                  Orders
+                </Link>
+                <Link 
+                  to="/enquiries"
+                  className="inline-flex items-center justify-center px-4 py-2 text-white font-medium hover:text-white/80 transition-colors"
+                >
+                  Enquiries
+                </Link>
+                <Link 
+                  to="/cart"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 bg-white/10 text-white font-semibold hover:bg-white/20 transition-colors relative"
+                >
+                  <span className="text-xl">🛒</span>
+                  <span>Cart</span>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link 
+                  to="/tailor/dashboard"
+                  className="inline-flex items-center justify-center rounded-xl px-4 py-2 bg-white/10 text-white font-semibold hover:bg-white/20 transition-colors"
+                >
+                  Profile
+                </Link>
+                <button 
+                  onClick={handleLogout}
+                  className="inline-flex items-center justify-center rounded-xl px-4 py-2 bg-black text-white font-semibold hover:bg-neutral-900 transition-colors"
+                >
+                  Logout
+                </button>
+              </>
+            )
+          ) : (
+            <>
+              <Link to="/login" className="inline-flex items-center justify-center rounded-xl px-4 py-2 bg-black text-white font-semibold hover:bg-neutral-900 transition-colors">Login</Link>
+              <Link to="/signup" className="inline-flex items-center justify-center rounded-xl px-4 py-2 bg-black text-white font-semibold hover:bg-neutral-900 transition-colors">Sign up</Link>
+            </>
+          )}
         </motion.div>
       </motion.div>
     </header>
