@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import MapPlaceholder from '../components/MapPlaceholder'
 import TailorListCard from '../components/TailorListCard'
 import { FiSearch } from 'react-icons/fi'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -14,22 +13,33 @@ const sampleTailors = [
     waiting: 3, heavyAvgMins: 60, lightAvgMins: 15, photoUrl: null },
   { id: 3, name: 'Elegant Alterations', rating: 4.8, reviews: 212, distanceKm: 1.9, priceFrom: 249, tags: ['Stitching','Urgent'],
     waiting: 0, heavyAvgMins: 50, lightAvgMins: 10, photoUrl: null },
+  { id: 1, name: 'StitchUp Tailors', rating: 4.7, reviews: 128, distanceKm: 1.2, priceFrom: 199, shopPhotoUrl: 'https://images.unsplash.com/photo-1520975917765-9763f2a7b3d6?auto=format&fit=crop&w=800&q=80', avgQuickMins: 20, avgHeavyMins: 90, isAvailable: true, currentOrders: 2 },
+  { id: 2, name: 'Needle & Thread', rating: 4.6, reviews: 96, distanceKm: 0.8, priceFrom: 149, shopPhotoUrl: 'https://images.unsplash.com/photo-1556909214-7c1e6a5b7b6b?auto=format&fit=crop&w=800&q=80', avgQuickMins: 25, avgHeavyMins: 100, isAvailable: false, currentOrders: 5 },
+  { id: 3, name: 'Elegant Alterations', rating: 4.8, reviews: 212, distanceKm: 1.9, priceFrom: 249, shopPhotoUrl: 'https://images.unsplash.com/photo-1542736667-069246bdbc45?auto=format&fit=crop&w=800&q=80', avgQuickMins: 15, avgHeavyMins: 80, isAvailable: true, currentOrders: 1 },
+  { id: 4, name: 'Rapid Repairs', rating: 4.5, reviews: 64, distanceKm: 0.6, priceFrom: 119, shopPhotoUrl: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=800&q=80', avgQuickMins: 18, avgHeavyMins: 85, isAvailable: true, currentOrders: 4 },
+  { id: 5, name: 'Urban Stitchworks', rating: 4.4, reviews: 48, distanceKm: 2.3, priceFrom: 159, shopPhotoUrl: 'https://images.unsplash.com/photo-1523906630133-f6934a84d1d3?auto=format&fit=crop&w=800&q=80', avgQuickMins: 22, avgHeavyMins: 110, isAvailable: true, currentOrders: 3 },
+  { id: 6, name: 'Button & Hem', rating: 4.2, reviews: 30, distanceKm: 3.1, priceFrom: 99, shopPhotoUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80', avgQuickMins: 30, avgHeavyMins: 140, isAvailable: false, currentOrders: 7 },
+  { id: 7, name: 'Classic Tailors Co.', rating: 4.9, reviews: 340, distanceKm: 0.4, priceFrom: 299, shopPhotoUrl: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80', avgQuickMins: 12, avgHeavyMins: 70, isAvailable: true, currentOrders: 0 },
+  { id: 8, name: 'Metro Mend', rating: 4.3, reviews: 54, distanceKm: 2.0, priceFrom: 129, shopPhotoUrl: 'https://images.unsplash.com/photo-1520975909799-9b8b9a2b5b5f?auto=format&fit=crop&w=800&q=80', avgQuickMins: 24, avgHeavyMins: 95, isAvailable: true, currentOrders: 6 },
+  { id: 9, name: 'SewRight Studio', rating: 4.6, reviews: 77, distanceKm: 1.5, priceFrom: 179, shopPhotoUrl: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=800&q=80', avgQuickMins: 19, avgHeavyMins: 88, isAvailable: true, currentOrders: 2 },
+  { id: 10, name: 'Pocketfix Tailors', rating: 4.1, reviews: 28, distanceKm: 4.0, priceFrom: 89, shopPhotoUrl: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=80', avgQuickMins: 35, avgHeavyMins: 150, isAvailable: false, currentOrders: 9 },
 ]
 
-const Chip = ({ label, selected, onClick }) => (
+const Chip = ({ label, selected, onClick })=>{
   <motion.button
     whileTap={{ scale: 0.98 }}
     whileHover={{ y: -1 }}
     onClick={onClick}
     className={["px-3 py-1.5 rounded-full border text-sm",
       selected ? 'border-[color:var(--color-primary)] text-[color:var(--color-primary)] bg-[color:var(--color-primary)]/10' : 'border-neutral-200 hover:border-[color:var(--color-primary)]' ].join(' ')}>
+  <button onClick={onClick} className={['flex items-center justify-center gap-1 rounded-full px-3 py-1 text-sm font-medium transition-all', selected ? 'border-(--color-primary) text-(--color-primary) bg-(--color-primary)/10' : 'border-neutral-200 hover:border-(--color-primary)' ].join(' ')}>
     {label}
   </motion.button>
-)
+}
 
 const FindTailor = () => {
   const [query, setQuery] = useState('')
-  const [filters, setFilters] = useState({ Alteration: false, Stitching: false, Urgent: false })
+  const [workType, setWorkType] = useState('quick') // quick | heavy
   const [hovered, setHovered] = useState(null)
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
@@ -41,7 +51,6 @@ const FindTailor = () => {
     ? paramType
     : (persistedType === 'heavy' || persistedType === 'light') ? persistedType : ''
 
-  const activeTags = Object.entries(filters).filter(([,v]) => v).map(([k]) => k)
   const list = useMemo(() => {
     const base = sampleTailors.filter(t =>
       (query ? t.name.toLowerCase().includes(query.toLowerCase()) : true) &&
@@ -61,26 +70,28 @@ const FindTailor = () => {
     const to = setTimeout(() => setLoading(false), 600)
     return () => clearTimeout(to)
   }, [])
+    return sampleTailors.filter(t => (query ? t.name.toLowerCase().includes(query.toLowerCase()) : true))
+  }, [query])
 
   return (
     <div className="min-h-dvh flex flex-col">
       <Navbar />
-      <main className="flex-1 grid grid-rows-[auto_1fr]">
-        {/* Floating controls */}
+      <main className="flex-1">
         <div className="z-10 px-4 py-3">
           <div className="mx-auto max-w-6xl flex flex-col gap-2">
             <div className="flex items-center gap-2 overflow-x-auto">
               <Chip label="Quick Fix" selected={selectedType==='light'} onClick={()=> { try { localStorage.setItem('workType', 'light') } catch {}; navigate('/find?type=light') }} />
               <Chip label="Heavy Tailoring" selected={selectedType==='heavy'} onClick={()=> { try { localStorage.setItem('workType', 'heavy') } catch {}; navigate('/find?type=heavy') }} />
             </div>
+          <div className="mx-auto max-w-4xl flex flex-col gap-3">
             <div className="flex items-center gap-2 bg-white rounded-xl border border-neutral-200 px-3 py-2 shadow-soft">
               <FiSearch className="text-neutral-500" />
               <input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Search tailors" className="flex-1 outline-none bg-transparent" />
             </div>
-            <div className="flex items-center gap-2 overflow-x-auto">
-              {['Alteration','Stitching','Urgent'].map((f) => (
-                <Chip key={f} label={f} selected={filters[f]} onClick={()=> setFilters(s => ({...s, [f]: !s[f]}))} />
-              ))}
+
+            <div className="flex items-center gap-2">
+              <Chip label="Quick" selected={workType==='quick'} onClick={() => setWorkType('quick')} />
+              <Chip label="Heavy" selected={workType==='heavy'} onClick={() => setWorkType('heavy')} />
             </div>
           </div>
         </div>
@@ -166,6 +177,18 @@ const FindTailor = () => {
                 </div>
               ) : null}
             </div>
+        <div className="px-4 pb-8">
+          <div className="mx-auto max-w-4xl grid gap-4">
+            {list.map(t => (
+              <TailorListCard
+                key={t.id}
+                tailor={t}
+                onHover={setHovered}
+                onLeave={()=>setHovered(null)}
+                onOpen={() => navigate(`/tailor/${t.id}`, { state: { tailor: t } })}
+                onBook={() => navigate('/booking', { state: { tailor: t, workType } })}
+              />
+            ))}
           </div>
         </div>
       </main>
