@@ -18,6 +18,15 @@ const Homepage = () => {
       <HeroSection />
 
       <section className="px-4 mx-auto w-full max-w-6xl">
+        <h2 className="text-2xl font-semibold mb-3">Explore our services</h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ServiceCard icon={<FiScissors />} title="Alterations & Repairs" subtitle="Hems, tapering, patching, and more" />
+          <ServiceCard icon={<FiTruck />} title="Pickup & Delivery" subtitle="Doorstep convenience, fast turnaround" />
+          <ServiceCard icon={<FiZap />} title="Express Service" subtitle="Urgent orders handled with care" />
+        </div>
+      </section>
+
+      <section className="px-4 mx-auto w-full max-w-6xl">
         <h2 className="text-2xl font-semibold mb-3">Popular nearby tailors</h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <TailorCard name="StitchUp Tailors" distanceKm={1.2} rating={4.7} reviewCount={128} priceFrom={199} onBook={() => navigate('/booking')} />

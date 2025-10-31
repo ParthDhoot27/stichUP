@@ -37,22 +37,23 @@ const Navbar = ({ hideUntilScroll = false }) => {
           </Link>
         </motion.div>
         <motion.nav
-          className="hidden md:flex items-center gap-6 text-sm justify-center"
+          className="hidden md:flex items-center gap-6 text-sm justify-center text-white"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: isVisible ? 1 : 0, scale: isVisible ? 1 : 0.95 }}
           transition={{ duration: 0.25, ease: 'easeOut', delay: 0.08 }}
         >
-          <Link to="/find" className="hover:text-[color:var(--color-primary)]">Find Tailors</Link>
-          <a href="#how" className="hover:text-[color:var(--color-primary)]">How it Works</a>
-          <a href="#contact" className="hover:text-[color:var(--color-primary)]">Contact</a>
+          <Link to="/find" className="text-white/90 hover:text-white">Find Tailors</Link>
+          <a href="#how" className="text-white/90 hover:text-white">How it Works</a>
+          <a href="#contact" className="text-white/90 hover:text-white">Contact</a>
         </motion.nav>
         <motion.div
-          className="flex justify-end"
+          className="flex justify-end items-center gap-2"
           initial={{ x: '-50%' }}
           animate={{ x: isVisible ? 0 : '-50%' }}
           transition={{ type: 'spring', stiffness: 260, damping: 24 }}
         >
-          <Link to="/login" className="btn-outline">Login</Link>
+          <Link to="/login" className="inline-flex items-center justify-center rounded-xl px-4 py-2 bg- text-[#305cde] font-semibold hover:bg-white/90 transition-colors">Login</Link>
+          <Link to="/signup" className="inline-flex items-center justify-center rounded-xl px-4 py-2 bg-white text-[#305cde] font-semibold hover:bg-white/90 transition-colors">Sign up</Link>
         </motion.div>
       </motion.div>
     </header>
