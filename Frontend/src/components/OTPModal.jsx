@@ -1,6 +1,6 @@
 import React from 'react'
 
-const OTPModal = ({ open, onClose }) => {
+const OTPModal = ({ open, onClose, onVerify }) => {
   if (!open) return null
   return (
     <div className="fixed inset-0 z-50">
@@ -16,7 +16,7 @@ const OTPModal = ({ open, onClose }) => {
           </div>
           <div className="mt-4 flex items-center gap-2 justify-end">
             <button className="btn-outline" onClick={onClose}>Close</button>
-            <button className="btn-primary">Verify</button>
+            <button className="btn-primary" onClick={() => { if (onVerify) onVerify(); }}>Verify</button>
           </div>
         </div>
       </div>

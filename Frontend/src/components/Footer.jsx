@@ -33,9 +33,10 @@ const Footer = () => {
           </div>
           <div>
             {/* <h4 className="text-base font-semibold text-neutral-900">Download app</h4> */}
-            <div className="mt-3 grid grid-cols-2 gap-3 max-w-xs">
-              {/* <a href="#" className="h-12 rounded-lg border border-neutral-300 bg-neutral-50 grid place-items-center text-xs font-semibold text-neutral-700">Get it on Google Play</a>
-              <a href="#" className="h-12 rounded-lg border border-neutral-300 bg-neutral-50 grid place-items-center text-xs font-semibold text-neutral-700">Download on the App Store</a> */}
+            <div className="mt-3 flex justify-end">
+              <a href="/" aria-label="StitchUp Home">
+                <img src="/logo2.png" alt="StitchUp logo" className="h-19 w-auto" />
+              </a>
             </div>
           </div>
         </div>
