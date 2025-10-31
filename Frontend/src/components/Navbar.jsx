@@ -39,9 +39,9 @@ const Navbar = ({ hideUntilScroll = false }) => {
       >
         <motion.div
           className="flex items-center gap-2 font-semibold"
-          initial={playEntrance ? { x: '50%' } : false}
-          animate={{ x: 0 }}
-          transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+          initial={playEntrance ? { x: 80, opacity: 0 } : false}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 260, damping: 22 }}
         >
           <Link to="/" className="flex items-center gap-3 font-semibold">
             <img src="/logo2.png" alt="Logo" className="h-10 w-50 rounded-md object-cover" />
@@ -53,18 +53,18 @@ const Navbar = ({ hideUntilScroll = false }) => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.25, ease: 'easeOut', delay: 0.08 }}
         >
-          <Link to="/find" className="text-white/90 hover:text-white">Find Tailors</Link>
-          <a href="#how" className="text-white/90 hover:text-white">How it Works</a>
-          <a href="#contact" className="text-white/90 hover:text-white">Contact</a>
+          {/* <Link to="/find" className="text-white/90 hover:text-white hover:underline underline-offset-4">Find Tailors</Link>
+          <a href="#how" className="text-white/90 hover:text-white hover:underline underline-offset-4">How it Works</a>
+          <a href="#contact" className="text-white/90 hover:text-white hover:underline underline-offset-4">Contact</a> */}
         </motion.nav>
         <motion.div
           className="flex justify-end items-center gap-2"
-          initial={playEntrance ? { x: '-50%' } : false}
-          animate={{ x: 0 }}
-          transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+          initial={playEntrance ? { x: -80, opacity: 0 } : false}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 260, damping: 22 }}
         >
-          <Link to="/login" className="inline-flex items-center justify-center rounded-xl px-4 py-2 bg-white text-[#305cde] font-semibold hover:bg-white/90 transition-colors">Login</Link>
-          <Link to="/signup" className="inline-flex items-center justify-center rounded-xl px-4 py-2 bg-white text-[#305cde] font-semibold hover:bg-white/90 transition-colors">Sign up</Link>
+          <Link to="/login" className="inline-flex items-center justify-center rounded-xl px-4 py-2 bg-black text-white font-semibold hover:bg-neutral-900 transition-colors">Login</Link>
+          <Link to="/signup" className="inline-flex items-center justify-center rounded-xl px-4 py-2 bg-black text-white font-semibold hover:bg-neutral-900 transition-colors">Sign up</Link>
         </motion.div>
       </motion.div>
     </header>
