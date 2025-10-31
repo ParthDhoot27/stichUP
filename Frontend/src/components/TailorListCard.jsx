@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 const Tag = ({ children }) => (
   <span className="px-2 py-0.5 rounded-full text-xs border border-neutral-200 bg-neutral-50">{children}</span>
 )
 
-const TailorListCard = ({ tailor, onHover, onLeave }) => {
+const TailorListCard = ({ tailor, onHover, onLeave, isQuickFix = false }) => {
+  const navigate = useNavigate()
   const {
     id,
     name,
@@ -60,6 +62,12 @@ const TailorListCard = ({ tailor, onHover, onLeave }) => {
     }
   }
 
+  const handleEnquireNow = (e) => {
+    e.stopPropagation()
+    // Navigate to enquiries page with tailor info
+    navigate(`/enquiries?tailorId=${id}&tailorName=${encodeURIComponent(name)}&isOnline=${isAvailable}`)
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -106,18 +114,27 @@ const TailorListCard = ({ tailor, onHover, onLeave }) => {
           </div>
         </div>
 
-        {/* Availability and Add to Cart Button */}
+        {/* Availability and Action Button */}
         <div className="flex items-center justify-between gap-3">
           <div className={`px-3 py-1 rounded-full text-xs font-medium ${isAvailable ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-600'}`}>
-            {isAvailable ? 'Open' : 'Closed'}
+            {isAvailable ? 'Online' : 'Offline'}
           </div>
-          <button 
-            onClick={handleAddToCart}
-            disabled={addedToCart}
-            className={`btn-primary flex-1 ${addedToCart ? 'opacity-75 cursor-not-allowed' : ''}`}
-          >
-            {addedToCart ? 'Added to Cart ✓' : 'Add to Cart'}
-          </button>
+          {isQuickFix ? (
+            <button 
+              onClick={handleEnquireNow}
+              className="btn-primary flex-1"
+            >
+              Enquire Now
+            </button>
+          ) : (
+            <button 
+              onClick={handleAddToCart}
+              disabled={addedToCart}
+              className={`btn-primary flex-1 ${addedToCart ? 'opacity-75 cursor-not-allowed' : ''}`}
+            >
+              {addedToCart ? 'Added to Cart ✓' : 'Add to Cart'}
+            </button>
+          )}
         </div>
       </div>
     </motion.div>

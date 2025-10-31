@@ -234,14 +234,21 @@ const FindTailor = () => {
               </div>
             ))
           ) : list.length ? (
-            list.map((t) => (
-              <TailorListCard
-                key={t.id}
-                tailor={t}
-                onHover={setHovered}
-                onLeave={() => setHovered(null)}
-              />
-            ))
+            list.map((t) => {
+              // Determine if this is quick fix based on URL params or localStorage
+              const workType = params.get('type') === 'heavy' ? 'heavy' : (localStorage.getItem('workType') === 'heavy' ? 'heavy' : 'light')
+              const isQuickFix = workType !== 'heavy'
+              
+              return (
+                <TailorListCard
+                  key={t.id}
+                  tailor={t}
+                  onHover={setHovered}
+                  onLeave={() => setHovered(null)}
+                  isQuickFix={isQuickFix}
+                />
+              )
+            })
           ) : (
               <div className="card p-6 text-center text-neutral-600">
                 No tailors match. Adjust filters or pick another work type.

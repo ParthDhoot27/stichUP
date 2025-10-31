@@ -9,26 +9,26 @@ const Categories = () => {
 
   // Quick fix categories - for simple repairs and alterations
   const quickFixCategories = [
-    { id: 'shirt', name: 'Shirt', image: '/shirt.jpg' },
-    { id: 'pant', name: 'Pant', image: '/pant.jpg' },
-    { id: 'jacket', name: 'Jacket', image: '/jacket.jpg' },
-    { id: 'kurta', name: 'Kurta', image: '/kurta.jpg' },
-    { id: 'dress', name: 'Dress', image: '/dress.jpg' },
-    { id: 'saree', name: 'Saree', image: '/saree.jpg' },
-    { id: 'other', name: 'Other', image: '/other.jpg' },
+    { id: 'shirt', name: 'Shirt', image: '/categories/shirt.png' },
+    { id: 'pant', name: 'Pant', image: '/categories/pants.png' },
+    { id: 'jacket', name: 'Jacket', image: '/categories/jacket.png' },
+    { id: 'kurta', name: 'Kurta', image: '/categories/kurta.png' },
+    { id: 'dress', name: 'Dress', image: '/categories/dress.png' },
+    { id: 'saree', name: 'Saree', image: '/categories/saree.png' },
+    { id: 'other', name: 'Other', image: '/categories/others.png' },
   ]
 
   // Heavy tailoring categories - for new garments and complex work
   const heavyTailoringCategories = [
-    { id: 'suit', name: 'Suit', image: '/suit.jpg' },
-    { id: 'blazer', name: 'Blazer', image: '/blazer.jpg' },
-    { id: 'coat', name: 'Coat', image: '/coat.jpg' },
-    { id: 'dress', name: 'Dress', image: '/dress.jpg' },
-    { id: 'sherwani', name: 'Sherwani', image: '/sherwani.jpg' },
-    { id: 'lehenga', name: 'Lehenga', image: '/lehenga.jpg' },
-    { id: 'saree', name: 'Saree', image: '/saree.jpg' },
-    { id: 'traditional', name: 'Traditional', image: '/traditional.jpg' },
-    { id: 'other', name: 'Other', image: '/other.jpg' },
+    { id: 'suit', name: 'Suit', image: '/categories/jacket.png' }, // Using jacket image for suit
+    { id: 'blazer', name: 'Blazer', image: '/categories/jacket.png' },
+    { id: 'coat', name: 'Coat', image: '/categories/jacket.png' },
+    { id: 'dress', name: 'Dress', image: '/categories/dress.png' },
+    { id: 'sherwani', name: 'Sherwani', image: '/categories/kurta.png' }, // Using kurta image for sherwani
+    { id: 'lehenga', name: 'Lehenga', image: '/categories/dress.png' }, // Using dress image for lehenga
+    { id: 'saree', name: 'Saree', image: '/categories/saree.png' },
+    { id: 'traditional', name: 'Traditional', image: '/categories/kurta.png' }, // Using kurta image for traditional
+    { id: 'other', name: 'Other', image: '/categories/others.png' },
   ]
 
   // Use appropriate categories based on type
@@ -60,18 +60,20 @@ const Categories = () => {
             <h1 className="text-2xl md:text-3xl font-extrabold mb-2">Select Category</h1>
             <div className="text-neutral-600 mb-6">Choose the type of garment you need help with</div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-6">
               {categories.map((category) => (
                 <button
                   key={category.id}
                   onClick={() => handleCategorySelect(category.id)}
-                  className="rounded-xl border border-neutral-200 overflow-hidden text-left hover:border-[color:var(--color-primary)] transition-all hover:shadow-md"
+                  className="rounded-xl border border-neutral-200 overflow-hidden text-left hover:border-[color:var(--color-primary)] transition-all hover:shadow-md flex flex-col h-full"
                 >
-                  <img 
-                    src={category.image} 
-                    alt={category.name} 
-                    className="w-full h-48 object-cover"
-                  />
+                  <div className="flex-1 min-h-[200px] overflow-hidden">
+                    <img 
+                      src={category.image} 
+                      alt={category.name} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <div className="p-4">
                     <div className="text-lg font-semibold">{category.name}</div>
                   </div>
