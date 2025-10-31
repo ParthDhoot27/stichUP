@@ -24,7 +24,7 @@ const HeroSection = () => {
 
       <div className="relative mx-auto w-full max-w-6xl px-4">
         {showLogo && (
-          <img src="/logo.jpg" alt="Logo" className="absolute top-10 left-4 h-14 w-auto rounded-md object-cover z-10" />
+          <img src="/logo2.png" alt="Logo" className="absolute top-10 left-4 h-25 w-auto rounded-md object-cover z-10" />
         )}
         <div className="min-h-dvh flex items-center">
           <div className="text-left">
