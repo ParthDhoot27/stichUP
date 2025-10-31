@@ -17,32 +17,42 @@ const Homepage = () => {
       <Navbar hideUntilScroll />
       <HeroSection />
 
-      <section className="px-4 mx-auto w-full max-w-6xl">
-        <h2 className="text-2xl font-semibold mb-3">Explore our services</h2>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <ServiceCard icon={<FiScissors />} title="Alterations & Repairs" subtitle="Hems, tapering, patching, and more" />
-          <ServiceCard icon={<FiTruck />} title="Pickup & Delivery" subtitle="Doorstep convenience, fast turnaround" />
-          <ServiceCard icon={<FiZap />} title="Express Service" subtitle="Urgent orders handled with care" />
+      {/* Craftsmanship & Quality */}
+      <section className="px-4 mx-auto w-full max-w-6xl py-10">
+        <div className="grid gap-6 md:grid-cols-2 items-center">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-semibold">Craftsmanship & Quality</h2>
+            <p className="mt-3 text-neutral-700">Skilled tailors delivering perfect fits and precise finishing.</p>
+            <p className="mt-2 text-neutral-700">Premium stitching, expert alterations, and attention to detail.</p>
+            <p className="mt-2 text-neutral-700">Your clothes handled with care and professionalism.</p>
+          </div>
+          <div className="h-64 md:h-80 rounded-2xl bg-neutral-200/60 border border-neutral-300" aria-label="highlight image" />
         </div>
       </section>
 
-      <section className="px-4 mx-auto w-full max-w-6xl">
-        <h2 className="text-2xl font-semibold mb-3">Popular nearby tailors</h2>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <TailorCard name="StitchUp Tailors" distanceKm={1.2} rating={4.7} reviewCount={128} priceFrom={199} onBook={() => navigate('/booking')} />
-          <TailorCard name="Needle & Thread" distanceKm={0.8} rating={4.6} reviewCount={96} priceFrom={149} onBook={() => navigate('/booking')} />
-        	<TailorCard name="Elegant Alterations" distanceKm={1.9} rating={4.8} reviewCount={212} priceFrom={249} onBook={() => navigate('/booking')} />
+      {/* Sustainable Fashion */}
+      <section className="px-4 mx-auto w-full max-w-6xl py-10">
+        <div className="grid gap-6 md:grid-cols-2 items-center">
+          <div className="order-2 md:order-1">
+            <h3 className="text-xl md:text-2xl font-semibold">Sustainable Fashion</h3>
+            <p className="mt-3 text-neutral-700">Revive, alter, and restyle instead of replacing.</p>
+            <p className="mt-2 text-neutral-700">Support local artisans and reduce textile waste.</p>
+            <p className="mt-2 text-neutral-700">Eco-friendly pickup and minimal packaging practices.</p>
+          </div>
+          <div className="order-1 md:order-2 h-64 md:h-80 rounded-2xl bg-neutral-200/60 border border-neutral-300" aria-label="highlight image" />
         </div>
       </section>
 
-      <section className="mt-10 bg-neutral-50">
-        <div className="mx-auto w-full max-w-6xl px-4 py-10">
-          <h2 className="text-2xl font-semibold mb-3">What customers say</h2>
-          <TestimonialsSlider items={[
-            { name: 'Aarav', stars: '★★★★★', text: 'Pickup was quick and fitting perfect!' },
-            { name: 'Riya', stars: '★★★★★', text: 'Loved the doorstep service and updates.' },
-            { name: 'Kabir', stars: '★★★★☆', text: 'Great pricing and timely delivery.' },
-          ]} />
+      {/* Fast & Convenient Service */}
+      <section className="px-4 mx-auto w-full max-w-6xl py-10">
+        <div className="grid gap-6 md:grid-cols-2 items-center">
+          <div>
+            <h3 className="text-xl md:text-2xl font-semibold">⚡ Fast & Convenient Service</h3>
+            <p className="mt-3 text-neutral-700">Doorstep pickup and delivery for ultimate ease.</p>
+            <p className="mt-2 text-neutral-700">Quick turnarounds with live order tracking.</p>
+            <p className="mt-2 text-neutral-700">Instant booking — tailoring made effortless.</p>
+          </div>
+          <div className="h-64 md:h-80 rounded-2xl bg-neutral-200/60 border border-neutral-300" aria-label="highlight image" />
         </div>
       </section>
 
