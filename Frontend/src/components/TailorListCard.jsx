@@ -24,13 +24,13 @@ const TailorListCard = ({ tailor, onHover, onLeave, onBook, onOpen }) => {
             {availability ? (
               <span className={["px-2 py-0.5 rounded-full text-xs border",
                 availability === 'Available' ? 'border-green-300 text-green-700 bg-green-50' : 'border-yellow-300 text-yellow-700 bg-yellow-50'
-              ].join(' ')}>{availability}</span>
+              ].join(' ')}>{availability === 'Available' ? 'Available now' : 'Busy'}</span>
             ) : null}
             {Number.isFinite(waiting) ? (
-              <span className="px-2 py-0.5 rounded-full text-xs border border-neutral-200 bg-neutral-50">Waiting: {waiting}</span>
+              <span className="px-2 py-0.5 rounded-full text-xs border border-neutral-200 bg-neutral-50">In queue: {waiting}</span>
             ) : null}
             {Number.isFinite(etaMinutes) ? (
-              <span className="px-2 py-0.5 rounded-full text-xs border border-neutral-200 bg-neutral-50">ETA: {etaMinutes} mins</span>
+              <span className="px-2 py-0.5 rounded-full text-xs border border-neutral-200 bg-neutral-50">Est. time: {etaMinutes} min</span>
             ) : null}
           </div>
           <div className="flex flex-wrap items-center gap-1.5 mt-2">

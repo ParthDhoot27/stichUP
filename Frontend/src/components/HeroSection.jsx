@@ -28,17 +28,17 @@ const HeroSection = () => {
         )}
         <div className="min-h-dvh flex items-center">
           <div className="text-left">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight tasa-orbiter-700">
               TAILORING AT
               <br/> 
               YOUR DOORSTEP
             </h1>
-            <p className="mt-3 text-white/90 max-w-2xl">
-              Skilled tailors nearby for stitching, alterations, and custom fittings, 
+            <p className="mt-3 text-white/90 max-w-2xl text-lg md:text-xl leading-relaxed">
+              Skilled tailors nearby for stitching, alterations, and custom fittings,
               <br/>
               just a tap away.
             </p>
-            <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="mt-6 flex flex-col sm:flex-row items-centre justify-center gap-4">
               <PrimaryButton onClick={() => navigate('/find')} className="px-8 py-3.5 text-lg md:px-10 md:py-4 md:text-xl rounded-2xl shadow-lg shadow-black/20 ring-1 ring-white/20">
                 Find a Tailor
               </PrimaryButton>
