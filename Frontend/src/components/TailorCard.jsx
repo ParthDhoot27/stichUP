@@ -1,29 +1,32 @@
 import React from 'react'
 import Card from './ui/Card'
-import Button from './ui/Button'
+import PrimaryButton from './ui/PrimaryButton'
+import { motion } from 'framer-motion'
 
 const TailorCard = ({ name, distanceKm, rating, reviewCount, priceFrom, photoUrl, onBook }) => {
   return (
-    <Card className="tailor-card" style={{ padding: 16 }}>
-      <div style={{ display: 'flex', gap: 12 }}>
-        <div style={{ width: 72, height: 72, borderRadius: 12, background: '#EFE9FF', border: '1px solid var(--c-border)', overflow: 'hidden' }}>
-          {photoUrl ? <img src={photoUrl} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : null}
+    <motion.div initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.25 }}>
+      <Card className="p-4">
+        <div className="flex gap-3">
+          <div className="w-[72px] h-[72px] rounded-xl bg-neutral-100 border border-neutral-200 overflow-hidden">
+            {photoUrl ? <img src={photoUrl} alt={name} className="w-full h-full object-cover" /> : null}
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center justify-between">
+              <h3 className="m-0 font-semibold">{name}</h3>
+              <div className="text-neutral-600 font-semibold">{rating} ★ ({reviewCount})</div>
+            </div>
+            <div className="flex gap-3 mt-1 text-neutral-600">
+              <span>{distanceKm} km</span>
+              <span>From ₹{priceFrom}</span>
+            </div>
+            <div className="mt-3">
+              <PrimaryButton onClick={onBook}>Book now</PrimaryButton>
+            </div>
+          </div>
         </div>
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0 }}>{name}</h3>
-            <div className="muted" style={{ fontWeight: 600 }}>{rating} ★ ({reviewCount})</div>
-          </div>
-          <div style={{ display: 'flex', gap: 12, marginTop: 6 }}>
-            <span className="muted">{distanceKm} km</span>
-            <span className="muted">From ₹{priceFrom}</span>
-          </div>
-          <div style={{ marginTop: 12 }}>
-            <Button onClick={onBook}>Book now</Button>
-          </div>
-        </div>
-      </div>
-    </Card>
+      </Card>
+    </motion.div>
   )
 }
 
