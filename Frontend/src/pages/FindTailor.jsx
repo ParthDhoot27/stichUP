@@ -86,7 +86,7 @@ const FindTailor = () => {
           <div className="mx-auto max-w-4xl flex flex-col gap-3">
             <div className="flex items-center gap-2 bg-white rounded-xl border border-neutral-200 px-3 py-2 shadow-soft">
               <FiSearch className="text-neutral-500" />
-              <input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Search tailors" className="flex-1 outline-none bg-transparent" />
+              <input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Search tailors by name or service" className="flex-1 outline-none bg-transparent" />
             </div>
 
             <div className="flex items-center gap-2">
@@ -127,7 +127,7 @@ const FindTailor = () => {
                 ))
               ) : (
                 <div className="card p-6 text-center text-neutral-600">
-                  No tailors match your search. Try changing filters or work type.
+                  No tailors match. Adjust filters or pick another work type.
                 </div>
               )}
             </div>
@@ -160,7 +160,7 @@ const FindTailor = () => {
                       />
                     ))
                   ) : (
-                    <div className="text-center text-neutral-600 p-4">No tailors found nearby. Adjust filters and try again.</div>
+                    <div className="text-center text-neutral-600 p-4">No tailors match. Adjust filters or pick another work type.</div>
                   )}
                 </div>
               </div>

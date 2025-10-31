@@ -17,29 +17,29 @@ const Homepage = () => {
       <Navbar hideUntilScroll />
       <HeroSection />
 
-      {/* Craftsmanship & Quality */}
+      {/* Listed professional tailors */}
       <section className="px-4 mx-auto w-full max-w-6xl py-10">
         <div className="grid gap-6 md:grid-cols-2 items-center">
           <div>
-            <h2 className="text-2xl md:text-3xl font-semibold" style={{ color: '#1c1c1c', fontFeatureSettings: '"liga" off, "clig" off', fontFamily: 'Lexend-Medium', fontSize: '26px', fontStyle: 'normal', fontWeight: 800, lineHeight: 'normal' }}>Craftsmanship & Quality</h2>
-            <p className="mt-3 text-neutral-700">Skilled tailors delivering perfect fits and precise finishing.</p>
-            <p className="mt-2 text-neutral-700">Premium stitching, expert alterations, and attention to detail.</p>
-            <p className="mt-2 text-neutral-700">Your clothes handled with care and professionalism.</p>
+            <h1 className="text-2xl md:text-3xl momo-heading font-extrabold">Professional Tailors</h1>
+            <p className="mt-3 text-neutral-700">• Verified and skilled tailors curated for quality work.</p>
+            <p className="mt-2 text-neutral-700">• Years of experience in styling, stitching, and alterations.</p>
+            <p className="mt-2 text-neutral-700">• Trusted craftsmanship for a perfect fit, every time.</p>
           </div>
           <img src="/AdobeStock_158668801.webp" alt="Craftsmanship highlight" className="h-64 md:h-80 w-full object-cover rounded-2xl border border-neutral-300" />
         </div>
       </section>
 
-      {/* Sustainable Fashion */}
+      {/* Convenience at every point */}
       <section className="px-4 mx-auto w-full max-w-6xl py-10">
-        <div className="grid gap-6 md:grid-cols-2 items-center">
+        <div className="grid gap-20 md:grid-cols-2 items-center">
           <div className="order-2 md:order-2">
-            <h3 className="text-xl md:text-2xl font-semibold" style={{ color: '#1c1c1c', fontFeatureSettings: '"liga" off, "clig" off', fontFamily: 'Lexend-Medium', fontSize: '26px', fontStyle: 'normal', fontWeight: 800, lineHeight: 'normal' }}>Sustainable Fashion</h3>
-            <p className="mt-3 text-neutral-700">Revive, alter, and restyle instead of replacing.</p>
-            <p className="mt-2 text-neutral-700">Support local artisans and reduce textile waste.</p>
-            <p className="mt-2 text-neutral-700">Eco-friendly pickup and minimal packaging practices.</p>
+            <h1 className="text-2xl md:text-3xl momo-heading font-extrabold">Convenience at every point</h1>
+            <p className="mt-3 text-neutral-700">• Book, track, and receive your garments at your doorstep.</p>
+            <p className="mt-2 text-neutral-700">• Fast pickup, timely delivery, and real-time updates.</p>
+            <p className="mt-2 text-neutral-700">• Tailoring made effortless, comfort meets smart service.</p>
           </div>
-          <img src="/sustainable.webp" alt="Sustainable fashion highlight" className="order-1 md:order-1 h-64 md:h-80 w-full object-cover rounded-2xl border border-neutral-300" />
+          <img src="/sustainable.webp" alt="Convenience highlight" className="order-1 md:order-1 h-64 md:h-80 w-full object-cover rounded-2xl border border-neutral-300" />
         </div>
       </section>
 
@@ -47,10 +47,10 @@ const Homepage = () => {
       <section className="px-4 mx-auto w-full max-w-6xl py-10">
         <div className="grid gap-6 md:grid-cols-2 items-center">
           <div>
-            <h3 className="text-xl md:text-2xl font-semibold" style={{ color: '#1c1c1c', fontFeatureSettings: '"liga" off, "clig" off', fontFamily: 'Lexend-Medium', fontSize: '26px', fontStyle: 'normal', fontWeight: 800, lineHeight: 'normal' }}>Fast & Convenient Service</h3>
-            <p className="mt-3 text-neutral-700">Doorstep pickup and delivery for ultimate ease.</p>
-            <p className="mt-2 text-neutral-700">Quick turnarounds with live order tracking.</p>
-            <p className="mt-2 text-neutral-700">Instant booking — tailoring made effortless.</p>
+            <h1 className="text-2xl md:text-3xl momo-heading font-extrabold">Fast & Convenient Service</h1>
+            <p className="mt-3 text-neutral-700">• Doorstep pickup and delivery for ultimate ease.</p>
+            <p className="mt-2 text-neutral-700">• Quick turnarounds with live order tracking.</p>
+            <p className="mt-2 text-neutral-700">• Instant booking, tailoring made effortless.</p>
           </div>
           <img src="/speed.webp" alt="Fast service highlight" className="h-64 md:h-80 w-full object-cover rounded-2xl border border-neutral-300" />
         </div>
