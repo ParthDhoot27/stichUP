@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #00C7A2;
-  --color-accent: #008F73;
+  --color-primary: #305cde;
+  --color-accent: #305cde;
   --color-text: #0C0C0C;
   --color-surface: #FFFFFF;
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
