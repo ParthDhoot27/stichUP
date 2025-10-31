@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import TailorListCard from '../components/TailorListCard'
+import MapPlaceholder from '../components/MapPlaceholder'
 import { FiSearch } from 'react-icons/fi'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
@@ -25,17 +26,21 @@ const sampleTailors = [
   { id: 10, name: 'Pocketfix Tailors', rating: 4.1, reviews: 28, distanceKm: 4.0, priceFrom: 89, shopPhotoUrl: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=80', avgQuickMins: 35, avgHeavyMins: 150, isAvailable: false, currentOrders: 9 },
 ]
 
-const Chip = ({ label, selected, onClick })=>{
+const Chip = ({ label, selected, onClick }) => (
   <motion.button
     whileTap={{ scale: 0.98 }}
     whileHover={{ y: -1 }}
     onClick={onClick}
-    className={["px-3 py-1.5 rounded-full border text-sm",
-      selected ? 'border-[color:var(--color-primary)] text-[color:var(--color-primary)] bg-[color:var(--color-primary)]/10' : 'border-neutral-200 hover:border-[color:var(--color-primary)]' ].join(' ')}>
-  <button onClick={onClick} className={['flex items-center justify-center gap-1 rounded-full px-3 py-1 text-sm font-medium transition-all', selected ? 'border-(--color-primary) text-(--color-primary) bg-(--color-primary)/10' : 'border-neutral-200 hover:border-(--color-primary)' ].join(' ')}>
+    className={[
+      'px-3 py-1.5 rounded-full border text-sm',
+      selected
+        ? 'border-[color:var(--color-primary)] text-[color:var(--color-primary)] bg-[color:var(--color-primary)]/10'
+        : 'border-neutral-200 hover:border-[color:var(--color-primary)]'
+    ].join(' ')}
+  >
     {label}
   </motion.button>
-}
+)
 
 const FindTailor = () => {
   const [query, setQuery] = useState('')
@@ -53,8 +58,7 @@ const FindTailor = () => {
 
   const list = useMemo(() => {
     const base = sampleTailors.filter(t =>
-      (query ? t.name.toLowerCase().includes(query.toLowerCase()) : true) &&
-      (activeTags.length ? activeTags.every(tag => t.tags.includes(tag)) : true)
+      (query ? t.name.toLowerCase().includes(query.toLowerCase()) : true)
     )
 
     return base.map(t => {
@@ -63,15 +67,13 @@ const FindTailor = () => {
       const availability = t.waiting === 0 ? 'Available' : 'Busy'
       return { ...t, availability, etaMinutes }
     })
-  }, [query, activeTags, selectedType])
+  }, [query, selectedType])
 
   // Mock initial loading state
   useEffect(() => {
     const to = setTimeout(() => setLoading(false), 600)
     return () => clearTimeout(to)
   }, [])
-    return sampleTailors.filter(t => (query ? t.name.toLowerCase().includes(query.toLowerCase()) : true))
-  }, [query])
 
   return (
     <div className="min-h-dvh flex flex-col">
@@ -93,6 +95,7 @@ const FindTailor = () => {
               <Chip label="Quick" selected={workType==='quick'} onClick={() => setWorkType('quick')} />
               <Chip label="Heavy" selected={workType==='heavy'} onClick={() => setWorkType('heavy')} />
             </div>
+          </div>
           </div>
         </div>
 
@@ -177,18 +180,6 @@ const FindTailor = () => {
                 </div>
               ) : null}
             </div>
-        <div className="px-4 pb-8">
-          <div className="mx-auto max-w-4xl grid gap-4">
-            {list.map(t => (
-              <TailorListCard
-                key={t.id}
-                tailor={t}
-                onHover={setHovered}
-                onLeave={()=>setHovered(null)}
-                onOpen={() => navigate(`/tailor/${t.id}`, { state: { tailor: t } })}
-                onBook={() => navigate('/booking', { state: { tailor: t, workType } })}
-              />
-            ))}
           </div>
         </div>
       </main>

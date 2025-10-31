@@ -25,7 +25,16 @@ const Login = () => {
     if (!form.password || form.password.length < 6) next.password = 'Min 6 characters'
     setErrors(next)
     if (Object.keys(next).length === 0) {
-      navigate('/customer')
+      // Check stored users (demo). In real app call backend API.
+      const users = JSON.parse(localStorage.getItem('users') || '[]')
+      const user = users.find(u => u.phone === form.phone && u.password === form.password)
+      if (!user) {
+        setErrors({ form: 'Invalid phone or password' })
+        return
+      }
+      localStorage.setItem('currentUser', JSON.stringify(user))
+      if (user.role === 'tailor') navigate('/tailor/dashboard')
+      else navigate('/customer')
     }
   }
 
@@ -43,7 +52,7 @@ const Login = () => {
               <PrimaryButton type="submit" className="flex-1">Login</PrimaryButton>
               <button type="button" className="btn-outline" onClick={() => setOtpOpen(true)}>Get OTP</button>
             </div>
-            <div className="text-sm text-neutral-600">Don't have an account? <Link className="text-[color:var(--color-primary)]" to="/signup">Sign up</Link></div>
+            <div className="text-sm text-neutral-600">Don't have an account? <Link className="text-(--color-primary)" to="/signup">Sign up</Link></div>
           </div>
         </form>
       </main>

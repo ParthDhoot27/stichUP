@@ -39,12 +39,12 @@ const HeroSection = () => {
               just a tap away.
             </p>
             <div className="mt-6 flex flex-col sm:flex-row items-centre justify-center gap-4">
-              <PrimaryButton onClick={() => navigate('/find')} className="px-8 py-3.5 text-lg md:px-10 md:py-4 md:text-xl rounded-2xl shadow-lg shadow-black/20 ring-1 ring-white/20">
+              <PrimaryButton onClick={() => navigate('/login')} className="px-8 py-3.5 text-lg md:px-10 md:py-4 md:text-xl rounded-2xl shadow-lg shadow-black/20 ring-1 ring-white/20">
                 Find a Tailor
               </PrimaryButton>
               <PrimaryButton
                 variant="outline"
-                onClick={() => navigate('/tailor/dashboard')}
+                onClick={() => navigate('/signup?role=tailor')}
                 className="px-8 py-3.5 text-lg md:px-10 md:py-4 md:text-xl rounded-2xl shadow-lg shadow-black/10 !text-white !border-white/60 hover:!border-white !bg-white/10 hover:!bg-white/20 backdrop-blur-sm"
               >
                 Become a Tailor
