@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
   name: { type: String },
-  email: { type: String, required: true, unique: true, index: true },
-  phone: { type: String, index: true },
+  email: { type: String, required: true, unique: true },
+  phone: { type: String },
   password: { type: String }, // hashed password (bcrypt)
   role: { type: String, enum: ['user','tailor','admin'], default: 'user' },
   address: { type: String },
