@@ -20,14 +20,14 @@ const Categories = () => {
 
   // Heavy tailoring categories - for new garments and complex work
   const heavyTailoringCategories = [
-    { id: 'suit', name: 'Suit', image: '/categories/jacket.png' }, // Using jacket image for suit
-    { id: 'blazer', name: 'Blazer', image: '/categories/jacket.png' },
-    { id: 'coat', name: 'Coat', image: '/categories/jacket.png' },
+    { id: 'suit', name: 'Suit', image: '/categories/suit.png' }, // Using jacket image for suit
+    { id: 'blazer', name: 'Blazer', image: '/categories/blazer.png' },
+    // { id: 'coat', name: 'Coat', image: '/categories/jacket.png' },
     { id: 'dress', name: 'Dress', image: '/categories/dress.png' },
-    { id: 'sherwani', name: 'Sherwani', image: '/categories/kurta.png' }, // Using kurta image for sherwani
-    { id: 'lehenga', name: 'Lehenga', image: '/categories/dress.png' }, // Using dress image for lehenga
-    { id: 'saree', name: 'Saree', image: '/categories/saree.png' },
-    { id: 'traditional', name: 'Traditional', image: '/categories/kurta.png' }, // Using kurta image for traditional
+    { id: 'sherwani', name: 'Sherwani', image: '/categories/Shwerwani.png' }, // Using kurta image for sherwani
+    { id: 'lehenga', name: 'Lehenga', image: '/categories/Lehenga.png' }, // Using dress image for lehenga
+    { id: 'saree', name: 'Saree', image: '/categories/Saree_heavy.png' },
+    { id: 'traditional', name: 'Traditional', image: '/categories/Traditional.png' },
     { id: 'other', name: 'Other', image: '/categories/others.png' },
   ]
 
