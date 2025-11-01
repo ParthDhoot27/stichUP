@@ -5,7 +5,15 @@ import TailorListCard from '../components/TailorListCard'
 import { FiSearch } from 'react-icons/fi'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import axios from 'axios'
+
+const sampleTailors = [
+  { id: 'T-1001', name: 'StitchUp Tailors', shopPhotoUrl: '', isAvailable: true, currentOrders: 3, distanceKm: 2.5, rating: 4.7, reviews: 128, priceFrom: 149 },
+  { id: 'T-1002', name: 'Needle & Thread', shopPhotoUrl: '', isAvailable: true, currentOrders: 1, distanceKm: 3.8, rating: 4.5, reviews: 95, priceFrom: 129 },
+  { id: 'T-1003', name: 'Perfect Stitch', shopPhotoUrl: '', isAvailable: false, currentOrders: 5, distanceKm: 1.2, rating: 4.9, reviews: 210, priceFrom: 199 },
+  { id: 'T-1004', name: 'Master Tailors', shopPhotoUrl: '', isAvailable: true, currentOrders: 2, distanceKm: 4.5, rating: 4.6, reviews: 156, priceFrom: 179 },
+  { id: 'T-1005', name: 'Quick Fix Tailors', shopPhotoUrl: '', isAvailable: true, currentOrders: 0, distanceKm: 0.8, rating: 4.8, reviews: 89, priceFrom: 99 },
+  { id: 'T-1006', name: 'Elite Stitching', shopPhotoUrl: '', isAvailable: true, currentOrders: 4, distanceKm: 5.2, rating: 4.4, reviews: 112, priceFrom: 219 },
+]
 
 const FindTailor = () => {
   const [query, setQuery] = useState('')
@@ -57,31 +65,12 @@ const FindTailor = () => {
 
   // Mock initial loading state
   useEffect(() => {
-    const fetchTailors = async () => {
-      try {
-        setLoading(true)
-        const response = await axios.get('/api/tailors', {
-          params: { query, workType },
-        })
-        console.log('API Response:', response.data) // Debugging line
-
-        // Ensure the response is valid and contains an array
-        if (response.data && Array.isArray(response.data)) {
-          setTailors(response.data)
-        } else {
-          console.error('Unexpected API response format:', response.data)
-          setTailors([]) // Fallback to an empty array
-        }
-      } catch (error) {
-        console.error('Error fetching tailors:', error)
-        setTailors([]) // Fallback to an empty array on error
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchTailors()
-  }, [query, workType])
+    // Simulate loading
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <div className="min-h-dvh flex flex-col">

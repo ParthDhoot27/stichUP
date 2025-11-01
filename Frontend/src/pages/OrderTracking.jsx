@@ -4,8 +4,9 @@ import Footer from '../components/Footer'
 import Card from '../components/ui/Card'
 import MapPlaceholder from '../components/MapPlaceholder'
 import PrimaryButton from '../components/ui/PrimaryButton'
-import { FiPhone, FiMessageCircle } from 'react-icons/fi'
-import { useLocation } from 'react-router-dom'
+import Input from '../components/ui/Input'
+import { FiPhone, FiMessageCircle, FiCheck, FiX } from 'react-icons/fi'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const Step = ({ label, active, done, time }) => {
   return (
@@ -24,9 +25,15 @@ const Step = ({ label, active, done, time }) => {
 
 const OrderTracking = () => {
   const location = useLocation()
+  const navigate = useNavigate()
+  const orderId = location.state?.orderId || 'ST-2049'
   // Mock data
   const [statusIndex, setStatusIndex] = useState(2) // 0..5
-  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [satisfactionModalOpen, setSatisfactionModalOpen] = useState(false)
+  const [isSatisfied, setIsSatisfied] = useState(null) // true, false, or null
+  const [deliveryDate, setDeliveryDate] = useState('')
+  const [deliveryTime, setDeliveryTime] = useState('')
+  const [showDeliverySchedule, setShowDeliverySchedule] = useState(false)
   const [rider, setRider] = useState(null) // { name, etaMin }
   const [etaSec, setEtaSec] = useState(0)
   const [proofAvailable, setProofAvailable] = useState(false)
@@ -42,12 +49,35 @@ const OrderTracking = () => {
   // Initialize from navigation state
   useEffect(() => {
     const s = location.state?.status
-    if (s === 'awaiting_confirmation') {
+    if (s === 'ready' || s === 'awaiting_confirmation') {
       setStatusIndex(3)
-      setConfirmOpen(true)
+      setSatisfactionModalOpen(true)
       setProofAvailable(!!location.state?.proof)
     }
   }, [location.state])
+
+  // Load order status from localStorage
+  useEffect(() => {
+    try {
+      const orders = JSON.parse(localStorage.getItem('customerOrders') || '[]')
+      const order = orders.find(o => o.id === orderId)
+      if (order) {
+        if (order.status === 'Ready' && !order.satisfactionStatus) {
+          setSatisfactionModalOpen(true)
+          setStatusIndex(3)
+        } else if (order.status === 'Not Satisfied') {
+          setStatusIndex(2) // Back to In Progress
+        } else if (order.status === 'Satisfied' && order.deliveryScheduled) {
+          // Delivery scheduled, show schedule info
+          setDeliveryDate(order.deliveryDate)
+          setDeliveryTime(order.deliveryTime)
+          setShowDeliverySchedule(true)
+        }
+      }
+    } catch (error) {
+      console.error('Error loading order:', error)
+    }
+  }, [orderId])
 
   // After assigning rider, auto-complete delivery
   useEffect(() => {
@@ -65,6 +95,70 @@ const OrderTracking = () => {
     }, 1000)
     return () => clearInterval(tick)
   }, [rider])
+
+  const handleSatisfaction = (satisfied) => {
+    setIsSatisfied(satisfied)
+    
+    if (!satisfied) {
+      // Not satisfied - send back to tailor
+      try {
+        const orders = JSON.parse(localStorage.getItem('customerOrders') || '[]')
+        const orderIndex = orders.findIndex(o => o.id === orderId)
+        if (orderIndex >= 0) {
+          orders[orderIndex].status = 'Not Satisfied'
+          orders[orderIndex].satisfactionStatus = false
+          orders[orderIndex].notSatisfiedAt = new Date().toISOString()
+          localStorage.setItem('customerOrders', JSON.stringify(orders))
+        }
+        
+        // Also update tailor orders
+        const tailorOrders = JSON.parse(localStorage.getItem('tailorOrders') || '[]')
+        const tailorOrderIndex = tailorOrders.findIndex(o => o.id === orderId)
+        if (tailorOrderIndex >= 0) {
+          tailorOrders[tailorOrderIndex].status = 'Not Satisfied'
+          tailorOrders[tailorOrderIndex].needsRevision = true
+          localStorage.setItem('tailorOrders', JSON.stringify(tailorOrders))
+        }
+      } catch (error) {
+        console.error('Error updating order:', error)
+      }
+      
+      setStatusIndex(2) // Back to In Progress
+      setSatisfactionModalOpen(false)
+      alert('Your feedback has been sent to the tailor. They will work on the changes.')
+    } else {
+      // Satisfied - show delivery scheduling
+      setShowDeliverySchedule(true)
+    }
+  }
+
+  const handleScheduleDelivery = () => {
+    if (!deliveryDate || !deliveryTime) {
+      alert('Please select both date and time for delivery')
+      return
+    }
+
+    try {
+      const orders = JSON.parse(localStorage.getItem('customerOrders') || '[]')
+      const orderIndex = orders.findIndex(o => o.id === orderId)
+      if (orderIndex >= 0) {
+        orders[orderIndex].status = 'Satisfied'
+        orders[orderIndex].satisfactionStatus = true
+        orders[orderIndex].deliveryScheduled = true
+        orders[orderIndex].deliveryDate = deliveryDate
+        orders[orderIndex].deliveryTime = deliveryTime
+        localStorage.setItem('customerOrders', JSON.stringify(orders))
+      }
+    } catch (error) {
+      console.error('Error scheduling delivery:', error)
+    }
+
+    // Assign rider for delivery
+    setRider({ name: 'Rahul', vehicle: 'MH12-AB-1234', phone: '+91 98765 43210', etaMin: 12 })
+    setStatusIndex(4)
+    setSatisfactionModalOpen(false)
+    setShowDeliverySchedule(false)
+  }
 
   const assignRider = () => {
     setRider({ name: 'Rahul', vehicle: 'MH12-AB-1234', phone: '+91 98765 43210', etaMin: 12 })
@@ -150,28 +244,113 @@ const OrderTracking = () => {
         </div>
       </main>
       <Footer />
-      {confirmOpen ? (
+      {/* Satisfaction Feedback Modal */}
+      {satisfactionModalOpen && (
         <div className="fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setConfirmOpen(false)} />
+          <div className="absolute inset-0 bg-black/40" onClick={() => {}} />
           <div className="absolute inset-0 grid place-items-center px-4">
-            <div className="card p-5 w-full max-w-sm bg-white">
-              <div className="text-lg font-semibold">Confirm completion</div>
-              <div className="text-neutral-600 text-sm mt-1">Tailor marked your work as done. Please review and confirm.</div>
-              <div className="mt-3 h-40 rounded-xl border border-neutral-200 bg-neutral-50 grid place-items-center text-neutral-500 overflow-hidden">
-                {proofAvailable ? (
-                  <div className="text-sm">Completion photo available (mock)</div>
-                ) : (
-                  <div className="text-sm">No image provided</div>
-                )}
-              </div>
-              <div className="mt-4 flex items-center justify-end gap-2">
-                <button className="btn-outline" onClick={() => setConfirmOpen(false)}>Talk first</button>
-                <button className="btn-primary" onClick={() => { setConfirmOpen(false); assignRider(); }}>Confirm & Assign Rider</button>
-              </div>
-            </div>
+            <Card className="p-6 w-full max-w-md">
+              <div className="text-lg font-semibold mb-2">Order Ready - Are you satisfied?</div>
+              <div className="text-neutral-600 text-sm mb-4">The tailor has marked your order as ready. Please review the completed work.</div>
+              
+              {proofAvailable && location.state?.photos && (
+                <div className="mb-4">
+                  <div className="text-sm font-medium mb-2">Completion Photos</div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {location.state.photos.slice(0, 3).map((photo, idx) => (
+                      <img key={idx} src={photo} alt={`Completion ${idx + 1}`} className="w-full h-20 object-cover rounded-lg border border-neutral-200" />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {!showDeliverySchedule ? (
+                <>
+                  <div className="text-sm font-medium mb-3">How do you feel about the work?</div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => handleSatisfaction(true)}
+                      className="p-4 border-2 border-green-300 rounded-xl hover:bg-green-50 transition-colors text-left"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <FiCheck className="w-5 h-5 text-green-600" />
+                        <span className="font-semibold text-green-700">Satisfied</span>
+                      </div>
+                      <div className="text-xs text-neutral-600">I'm happy with the work</div>
+                    </button>
+                    <button
+                      onClick={() => handleSatisfaction(false)}
+                      className="p-4 border-2 border-red-300 rounded-xl hover:bg-red-50 transition-colors text-left"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <FiX className="w-5 h-5 text-red-600" />
+                        <span className="font-semibold text-red-700">Not Satisfied</span>
+                      </div>
+                      <div className="text-xs text-neutral-600">Needs changes</div>
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="text-sm font-medium mb-3">Schedule Home Delivery</div>
+                  <div className="grid gap-3">
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">Delivery Date</label>
+                      <input
+                        type="date"
+                        value={deliveryDate}
+                        onChange={(e) => setDeliveryDate(e.target.value)}
+                        min={new Date().toISOString().split('T')[0]}
+                        className="w-full rounded-xl border border-neutral-200 px-3 py-2 outline-none focus:border-[color:var(--color-primary)]"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">Preferred Time</label>
+                      <input
+                        type="time"
+                        value={deliveryTime}
+                        onChange={(e) => setDeliveryTime(e.target.value)}
+                        className="w-full rounded-xl border border-neutral-200 px-3 py-2 outline-none focus:border-[color:var(--color-primary)]"
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-2 mt-4">
+                    <button
+                      onClick={() => {
+                        setShowDeliverySchedule(false)
+                        setIsSatisfied(null)
+                      }}
+                      className="btn-outline flex-1"
+                    >
+                      Back
+                    </button>
+                    <PrimaryButton
+                      onClick={handleScheduleDelivery}
+                      className="flex-1"
+                      disabled={!deliveryDate || !deliveryTime}
+                    >
+                      Schedule Delivery
+                    </PrimaryButton>
+                  </div>
+                </>
+              )}
+            </Card>
           </div>
         </div>
-      ) : null}
+      )}
+
+      {/* Delivery Scheduled Info */}
+      {showDeliverySchedule && deliveryDate && deliveryTime && !satisfactionModalOpen && (
+        <Card className="p-5 mb-4">
+          <div className="text-lg font-semibold mb-2">Delivery Scheduled</div>
+          <div className="text-sm text-neutral-600">
+            Date: {new Date(deliveryDate).toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+          </div>
+          <div className="text-sm text-neutral-600">
+            Time: {deliveryTime}
+          </div>
+        </Card>
+      )}
     </div>
   )
 }

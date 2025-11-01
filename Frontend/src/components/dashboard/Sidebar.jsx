@@ -16,11 +16,7 @@ const Sidebar = () => {
   return (
     <aside className="hidden md:flex md:w-64 shrink-0 border-r border-neutral-200 bg-white">
       <div className="p-4 w-full">
-        <div className="flex items-center gap-2 font-semibold px-1">
-          <span className="h-6 w-6 rounded-md bg-[color:var(--color-primary)]" />
-          Tailor Panel
-        </div>
-        <div className="mt-4 grid gap-1">
+        <div className="grid gap-1">
           <NavItem to="/tailor/dashboard" icon={<FiHome/>} label="Home" />
           <NavItem to="/tailor/orders" icon={<FiList/>} label="Orders" />
           <NavItem to="/tailor/earnings" icon={<FiDollarSign/>} label="Earnings" />

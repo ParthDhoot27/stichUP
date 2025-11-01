@@ -23,10 +23,6 @@ const Home = () => {
           <div className="text-lg font-semibold mb-3">Recent orders</div>
           <div className="text-neutral-600 text-sm">No new orders</div>
         </Card>
-        <Card className="p-5">
-          <div className="text-lg font-semibold mb-3">Tips</div>
-          <div className="text-neutral-600 text-sm">Keep your profile updated for better visibility.</div>
-        </Card>
       </div>
     </TailorLayout>
   )

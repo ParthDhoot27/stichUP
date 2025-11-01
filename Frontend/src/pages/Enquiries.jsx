@@ -12,7 +12,12 @@ const Enquiries = () => {
   
   const [messages, setMessages] = useState([])
   const [chatInput, setChatInput] = useState('')
+  const [isRecording, setIsRecording] = useState(false)
+  const [recordingTime, setRecordingTime] = useState(0)
   const chatRef = useRef(null)
+  const mediaRecorderRef = useRef(null)
+  const audioChunksRef = useRef([])
+  const recordingTimerRef = useRef(null)
 
   // Load enquiries from localStorage when tailorId changes
   useEffect(() => {
@@ -107,6 +112,91 @@ const Enquiries = () => {
     }
   }
 
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const mediaRecorder = new MediaRecorder(stream)
+      mediaRecorderRef.current = mediaRecorder
+      audioChunksRef.current = []
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data)
+        }
+      }
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
+        const audioUrl = URL.createObjectURL(audioBlob)
+        
+        // Convert blob to base64 for storage
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          const base64Audio = reader.result
+          
+          const voiceMessage = {
+            id: messages.length + 1,
+            from: 'user',
+            type: 'voice',
+            audioUrl: base64Audio,
+            duration: recordingTime,
+            createdAt: new Date()
+          }
+          
+          setMessages(prev => [...prev, voiceMessage])
+          
+          // Stop all tracks
+          stream.getTracks().forEach(track => track.stop())
+          
+          // Reset recording state
+          setIsRecording(false)
+          setRecordingTime(0)
+          if (recordingTimerRef.current) {
+            clearInterval(recordingTimerRef.current)
+          }
+          
+          // Mock tailor reply
+          if (isOnline) {
+            setTimeout(() => {
+              const tailorReply = {
+                id: messages.length + 2,
+                from: 'tailor',
+                text: 'Thanks for the voice message! I understand your requirements.',
+                createdAt: new Date()
+              }
+              setMessages(prev => [...prev, tailorReply])
+            }, 1500)
+          }
+        }
+        reader.readAsDataURL(audioBlob)
+      }
+
+      mediaRecorder.start()
+      setIsRecording(true)
+      setRecordingTime(0)
+      
+      // Start timer
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingTime(prev => prev + 1)
+      }, 1000)
+    } catch (error) {
+      console.error('Error starting recording:', error)
+      alert('Could not access microphone. Please check permissions.')
+    }
+  }
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop()
+    }
+  }
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins}:${secs.toString().padStart(2, '0')}`
+  }
+
   // Load all enquiries for list view
   useEffect(() => {
     try {
@@ -116,6 +206,18 @@ const Enquiries = () => {
       console.error('Error loading enquiries:', error)
     }
   }, [])
+
+  // Cleanup recording on unmount
+  useEffect(() => {
+    return () => {
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current)
+      }
+      if (mediaRecorderRef.current && isRecording) {
+        mediaRecorderRef.current.stop()
+      }
+    }
+  }, [isRecording])
 
   // Save messages to localStorage
   useEffect(() => {
@@ -172,7 +274,9 @@ const Enquiries = () => {
                   const lastMessage = enquiry.messages && enquiry.messages.length > 0 
                     ? enquiry.messages[enquiry.messages.length - 1] 
                     : null
-                  const preview = lastMessage ? lastMessage.text.substring(0, 100) : 'No messages yet'
+                  const preview = lastMessage 
+                    ? (lastMessage.type === 'voice' ? '🎤 Voice message' : (lastMessage.text || 'Voice message').substring(0, 100))
+                    : 'No messages yet'
                   
                   return (
                     <Link
@@ -264,29 +368,65 @@ const Enquiries = () => {
                         ? 'text-neutral-500 text-xs bg-transparent'
                         : 'bg-white border border-neutral-200'
                     }`}>
-                      {msg.text}
+                      {msg.type === 'voice' ? (
+                        <div className="flex items-center gap-2">
+                          <audio controls src={msg.audioUrl} className="max-w-full">
+                            Your browser does not support the audio element.
+                          </audio>
+                          <span className="text-xs opacity-75">{formatTime(msg.duration || 0)}</span>
+                        </div>
+                      ) : (
+                        msg.text
+                      )}
                     </div>
                   </div>
                 ))
               )}
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <input
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                 placeholder="Type your message..."
                 className="flex-1 px-3 py-2 border border-neutral-200 rounded-lg outline-none focus:ring-2 focus:ring-[color:var(--color-primary)]"
-                disabled={!isOnline}
+                disabled={!isOnline || isRecording}
               />
-              <button 
-                onClick={sendMessage} 
-                className="btn-primary"
-                disabled={!isOnline || !chatInput.trim()}
-              >
-                Send
-              </button>
+              {isRecording ? (
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 px-3 py-2 bg-red-100 text-red-800 rounded-lg">
+                    <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+                    <span className="text-sm font-medium">{formatTime(recordingTime)}</span>
+                  </div>
+                  <button 
+                    onClick={stopRecording}
+                    className="btn-primary"
+                  >
+                    Stop
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={startRecording}
+                    disabled={!isOnline}
+                    className="px-3 py-2 rounded-lg border border-neutral-200 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Record voice note"
+                  >
+                    <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                  <button 
+                    onClick={sendMessage} 
+                    className="btn-primary"
+                    disabled={!isOnline || !chatInput.trim()}
+                  >
+                    Send
+                  </button>
+                </>
+              )}
             </div>
             
             <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">

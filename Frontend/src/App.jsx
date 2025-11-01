@@ -12,6 +12,7 @@ import TailorHome from './pages/tailor/Home'
 import TailorOrders from './pages/tailor/Orders'
 import TailorEarnings from './pages/tailor/Earnings'
 import TailorProfilePage from './pages/tailor/Profile'
+import TailorEnquiries from './pages/tailor/Enquiries'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminTailors from './pages/admin/Tailors'
 import AdminUsers from './pages/admin/Users'
@@ -40,6 +41,7 @@ const App = () => {
         <Route path='/tailor/orders' element={<TailorOrders/>} />
         <Route path='/tailor/earnings' element={<TailorEarnings/>} />
         <Route path='/tailor/profile' element={<TailorProfilePage/>} />
+        <Route path='/tailor/enquiries' element={<TailorEnquiries/>} />
         <Route path='/admin' element={<AdminDashboard/>} />
         <Route path='/admin/tailors' element={<AdminTailors/>} />
         <Route path='/admin/users' element={<AdminUsers/>} />
