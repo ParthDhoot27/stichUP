@@ -45,9 +45,16 @@ router.post(
 
       const { name, email, phone, password, role = "user", address, location } = req.body;
 
-      // Check if user already exists
+      // Normalize phone number (remove non-digits)
+      const normalizedPhone = phone.replace(/\D/g, "");
+
+      // Check if user already exists (try both normalized and original formats)
       const existingUser = await User.findOne({
-        $or: [{ email }, { phone }]
+        $or: [
+          { email },
+          { phone: normalizedPhone },
+          { phone: phone.trim() }
+        ]
       });
 
       if (existingUser) {
@@ -70,11 +77,11 @@ router.post(
         };
       }
 
-      // Create user
+      // Create user with normalized phone
       const user = await User.create({
         name,
         email,
-        phone,
+        phone: normalizedPhone, // Store normalized phone
         password: hashedPassword,
         role,
         address,
@@ -130,22 +137,52 @@ router.post(
 
       const { phone, password } = req.body;
 
-      // Find user by phone or email
+      // Find user by phone or email (explicitly select password field)
+      const normalizedPhone = phone.replace(/\D/g, "");
+      
+      // Debug logging (remove in production)
+      if (process.env.NODE_ENV === "development") {
+        console.log("Login attempt - Input phone:", phone);
+        console.log("Normalized phone:", normalizedPhone);
+      }
+      
+      // Try multiple phone formats to find user
       const user = await User.findOne({
         $or: [
-          { phone: phone.replace(/\D/g, "") },
+          { phone: normalizedPhone },
+          { phone: phone }, // Try exact match
+          { phone: phone.trim() }, // Try trimmed
           { email: phone }
         ]
-      });
+      }).select('+password');
 
       if (!user) {
+        // Additional debugging
+        if (process.env.NODE_ENV === "development") {
+          const allUsers = await User.find({}).select('phone email');
+          console.log("Available users in DB:", allUsers.map(u => ({ phone: u.phone, email: u.email })));
+        }
         return res.status(401).json({ message: "Invalid phone/email or password" });
+      }
+      
+      // Debug logging
+      if (process.env.NODE_ENV === "development") {
+        console.log("User found - Phone:", user.phone, "Has password:", !!user.password);
+      }
+
+      // Check if user has a password set
+      if (!user.password) {
+        return res.status(401).json({ message: "Password not set for this account. Please use OTP login or reset password." });
       }
 
       // Check password
-      const isValidPassword = await bcrypt.compare(password, user.password || "");
+      const isValidPassword = await bcrypt.compare(password, user.password);
 
       if (!isValidPassword) {
+        // Debug logging
+        if (process.env.NODE_ENV === "development") {
+          console.log("Password comparison failed for user:", user.phone);
+        }
         return res.status(401).json({ message: "Invalid phone/email or password" });
       }
 
