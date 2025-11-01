@@ -9,14 +9,12 @@ const userSchema = new mongoose.Schema({
     type: String, 
     lowercase: true,
     trim: true,
-    index: true,
     sparse: true // Allow multiple null values
   },
   phone: { 
     type: String, 
     required: true,
     unique: true,
-    index: true,
     trim: true,
     validate: {
       validator: function(v) {
@@ -32,8 +30,7 @@ const userSchema = new mongoose.Schema({
   role: { 
     type: String, 
     enum: ['user', 'tailor', 'admin'], 
-    default: 'user',
-    index: true
+    default: 'user'
   },
   address: { 
     type: String,
@@ -91,7 +88,6 @@ const userSchema = new mongoose.Schema({
 // Indexes
 userSchema.index({ location: '2dsphere' });
 userSchema.index({ email: 1 }, { sparse: true });
-userSchema.index({ phone: 1 }, { unique: true });
 userSchema.index({ role: 1 });
 
 // Virtual for remaining credits

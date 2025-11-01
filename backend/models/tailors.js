@@ -10,7 +10,6 @@ const tailorSchema = new mongoose.Schema({
     type: String, 
     lowercase: true,
     trim: true,
-    index: true,
     sparse: true
   },
   phone: { 
@@ -26,8 +25,7 @@ const tailorSchema = new mongoose.Schema({
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    index: true
+    ref: 'User'
   },
   shopPhotoUrl: { 
     type: String 

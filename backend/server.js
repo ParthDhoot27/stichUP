@@ -33,9 +33,35 @@ const limiter = rateLimit({
 app.use("/api/", limiter);
 
 // MongoDB connection with improved error handling
-const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/stichUP";
+// Support Railway MongoDB connection variables
+const getMongoURI = () => {
+  // If MONGO_URI is explicitly set, use it
+  if (process.env.MONGO_URI) {
+    return process.env.MONGO_URI;
+  }
+  
+  // Railway MongoDB service connection (if using Railway's MongoDB template)
+  if (process.env.MONGO_URL) {
+    return process.env.MONGO_URL;
+  }
+  
+  // Build from Railway MongoDB variables
+  if (process.env.MONGOUSER && process.env.MONGOPASSWORD && process.env.MONGOHOST) {
+    const port = process.env.MONGOPORT || '27017';
+    const authSource = process.env.MONGO_INITDB_DATABASE ? `?authSource=${process.env.MONGO_INITDB_DATABASE}` : '?authSource=admin';
+    return `mongodb://${process.env.MONGOUSER}:${process.env.MONGOPASSWORD}@${process.env.MONGOHOST}:${port}/stichUP${authSource}`;
+  }
+  
+  // Default local development
+  return "mongodb://127.0.0.1:27017/stichUP";
+};
 
-mongoose.connect(MONGO_URI)
+const MONGO_URI = getMongoURI();
+
+mongoose.connect(MONGO_URI, {
+  serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+  socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+})
   .then(() => {
     console.log("✅ MongoDB Connected to", MONGO_URI);
     console.log("🚀 Server running on http://localhost:" + (process.env.PORT || 5000));
